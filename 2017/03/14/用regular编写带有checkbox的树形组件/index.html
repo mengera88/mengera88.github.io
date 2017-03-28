@@ -96,16 +96,16 @@
 
 这个层级图和RegularUI的树状图需求上还是有差别的，RegularUI的树形组件只支持单选，并且选择形式仅仅是高亮某个选中层，而本篇文章所说的树形组件需要支持多选，多选的形式可以是加checkbox，也可以在层级后面显示勾勾表示选择。
 设计思路大家都知道，类似这种树形组件，最好的办法就是递">
-<meta property="og:image" content="http://yoursite.com/../images/treeList.png">
-<meta property="og:image" content="http://yoursite.com/../images/transfer.png">
-<meta property="og:updated_time" content="2017-03-14T09:49:26.000Z">
+<meta property="og:image" content="http://yoursite.com/images/treeList.png">
+<meta property="og:image" content="http://yoursite.com/images/transfer.png">
+<meta property="og:updated_time" content="2017-03-28T06:34:41.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="用regular编写带有checkbox的树形组件">
 <meta name="twitter:description" content="最近由于项目需求，要写一个多层级类似树状目录结构，并且每一个层级都有checkbox勾选,类似下图:
 
 这个层级图和RegularUI的树状图需求上还是有差别的，RegularUI的树形组件只支持单选，并且选择形式仅仅是高亮某个选中层，而本篇文章所说的树形组件需要支持多选，多选的形式可以是加checkbox，也可以在层级后面显示勾勾表示选择。
 设计思路大家都知道，类似这种树形组件，最好的办法就是递">
-<meta name="twitter:image" content="http://yoursite.com/../images/treeList.png">
+<meta name="twitter:image" content="http://yoursite.com/images/treeList.png">
 
 
 
@@ -328,7 +328,7 @@
 
       
         <p>最近由于项目需求，要写一个多层级类似树状目录结构，并且每一个层级都有checkbox勾选,类似下图:</p>
-<p><img src="../images/treeList.png" alt="alt 层级目录"></p>
+<p><img src="/images/treeList.png" alt="alt 层级目录"></p>
 <p>这个层级图和RegularUI的树状图需求上还是有差别的，RegularUI的树形组件只支持单选，并且选择形式仅仅是高亮某个选中层，而本篇文章所说的树形组件需要支持多选，多选的形式可以是加checkbox，也可以在层级后面显示勾勾表示选择。</p>
 <h2 id="设计思路"><a href="#设计思路" class="headerlink" title="设计思路"></a>设计思路</h2><p>大家都知道，类似这种树形组件，最好的办法就是递归了，其实单纯的不带checkbox树形组件递归并不是很难，首先设计一个单层结构的，作为一个子组件，再设计父组件，用简单的逻辑来判断是否递归自己，由于业务需要，我自己又添加了一个顶层的组件，用来综合处理所有的逻辑。</p>
 <p>千言万语不如几行代码来的清楚：</p>
@@ -346,7 +346,7 @@
 <figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">tree-list</span> <span class="attr">source</span>=<span class="string">&#123;source&#125;</span>&gt;</span><span class="tag">&lt;/<span class="name">tree-list</span>&gt;</span></div></pre></td></tr></table></figure>
 <p><strong>treeView.js</strong><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 带有checkbox的树组件顶级视图，调用子视图</div><div class="line"> * 使用示例：</div><div class="line"> * &lt;tree-view source=&#123;source&#125; on-check=&#123;check时事件处理函数&#125;&gt;&lt;/tree-view&gt;</div><div class="line"> * </div><div class="line"> */</div><div class="line"></div><div class="line">define([</div><div class="line">    <span class="string">'base/util'</span>,</div><div class="line">    <span class="string">'base/event'</span>,</div><div class="line">    <span class="string">'regular!./treeViewWithCheck.html'</span>,</div><div class="line">    <span class="string">'text!./treeListWithCheck.css'</span>,</div><div class="line">    <span class="string">'util/template/tpl'</span>,</div><div class="line">    <span class="string">'&#123;pro&#125;global/util.js'</span>,</div><div class="line">], <span class="function"><span class="keyword">function</span>(<span class="params">_u, _v, _tpl, _css, _t, _util</span>) </span>&#123;</div><div class="line"></div><div class="line">    _t._$parseUITemplate(<span class="string">'&lt;textarea name="css" id="css-box"&gt;'</span> + _css + <span class="string">'&lt;/textarea&gt;'</span>);</div><div class="line">    </div><div class="line">    <span class="keyword">var</span> dom = Regular.dom;</div><div class="line">    </div><div class="line">    <span class="keyword">var</span> TreeViewWithCheck = Regular.extend(&#123;</div><div class="line">        <span class="attr">name</span>: <span class="string">'tree-view'</span>,</div><div class="line">        <span class="attr">template</span>: _tpl,</div><div class="line">        <span class="attr">config</span>: <span class="function"><span class="keyword">function</span>(<span class="params">data</span>) </span>&#123;</div><div class="line">            <span class="keyword">this</span>.$ancestor = <span class="keyword">this</span>;</div><div class="line">        &#125;,</div><div class="line">        <span class="attr">check</span>: <span class="function"><span class="keyword">function</span>(<span class="params">source, isChecked, parent</span>) </span>&#123;</div><div class="line">            <span class="keyword">this</span>.$emit(<span class="string">'check'</span>, &#123;</div><div class="line">                <span class="attr">source</span>: source,</div><div class="line">                <span class="attr">isChecked</span>: isChecked,</div><div class="line">                <span class="attr">parent</span>: parent</div><div class="line">            &#125;)</div><div class="line">        &#125;</div><div class="line">    &#125;)</div><div class="line">&#125;)</div></pre></td></tr></table></figure></p>
 <p>相信大家看到了，顶级组件把所有的子组件抛出来的时间都统一$emit出一个事件，这样在后期处理业务逻辑相关的代码时会方便很多，比如我现在要做的一个需求就是将这个树形组件应用在穿梭框中，类似于这种：</p>
-<p><img src="../images/transfer.png" alt="alt 层级目录"></p>
+<p><img src="/images/transfer.png" alt="alt 层级目录"></p>
 <p>需要实现左右数据类似于联动的绑定。</p>
 <p>后期会研究下用vue实现相同的组件。这篇文章先到这里啦~~</p>
 
