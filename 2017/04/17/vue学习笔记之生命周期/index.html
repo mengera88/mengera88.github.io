@@ -95,7 +95,7 @@ Vue实例Vue构造器vue的根实例：123var vm = new Vue(&amp;#123;    //选�
 Vue实例Vue构造器vue的根实例：123var vm = new Vue(&amp;#123;    //选项&amp;#125;)
 也可以扩展Vue构造器，编写可复用的组件构造器：123456var MyComponent = Vue.extend(&amp;#1">
 <meta property="og:image" content="http://yoursite.com/images/lifecycle.png">
-<meta property="og:updated_time" content="2017-04-17T12:52:41.000Z">
+<meta property="og:updated_time" content="2017-04-17T13:02:17.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="vue学习笔记">
 <meta name="twitter:description" content="最近学了vue相关的知识，并且做了一个小demo，切身体会到了vue框架对开发效率带来的提升。这篇文章记录本人容易忽略的一些小细节，也希望对大家都有帮助
@@ -352,6 +352,7 @@ Vue实例Vue构造器vue的根实例：123var vm = new Vue(&amp;#123;    //选�
 <li>善用过滤器和计算属性</li>
 <li>使用.vue文件时，template元素内必须只能有一个根节点，否则会报错</li>
 <li>用到的变量记得在data中声明，不能不声明就直接使用，会报错</li>
+<li>事件绑定在循环指令中会无效，这个不知道原因，希望懂的人士可以多多指教一下。目前的解决方法是绑定在父节点中，或者直接在子组件中绑定，而不是在父组件中绑定。</li>
 </ul>
 
       
