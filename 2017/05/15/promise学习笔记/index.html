@@ -1,0 +1,735 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="javascript es6 promise," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言一直想写一篇关于promise的文来总结一下之前零零散散的promise知识点，趁着工作闲暇，来做个总结。PS:本文适合有一定JavaScript基础的童鞋阅读。
+什么是promise如果说到JavaScript的异步处理，我想大多数人都会想到利用回调函数：
+1234567//示例：使用了回调函数的异步处理http.get(&apos;/v1/get&apos;, function(error, data) &amp;#">
+<meta property="og:type" content="article">
+<meta property="og:title" content="promise学习笔记">
+<meta property="og:url" content="http://yoursite.com/2017/05/15/promise学习笔记/index.html">
+<meta property="og:site_name" content="前端静径">
+<meta property="og:description" content="前言一直想写一篇关于promise的文来总结一下之前零零散散的promise知识点，趁着工作闲暇，来做个总结。PS:本文适合有一定JavaScript基础的童鞋阅读。
+什么是promise如果说到JavaScript的异步处理，我想大多数人都会想到利用回调函数：
+1234567//示例：使用了回调函数的异步处理http.get(&apos;/v1/get&apos;, function(error, data) &amp;#">
+<meta property="og:image" content="http://yoursite.com/images/promises.png">
+<meta property="og:updated_time" content="2017-05-16T02:43:02.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="promise学习笔记">
+<meta name="twitter:description" content="前言一直想写一篇关于promise的文来总结一下之前零零散散的promise知识点，趁着工作闲暇，来做个总结。PS:本文适合有一定JavaScript基础的童鞋阅读。
+什么是promise如果说到JavaScript的异步处理，我想大多数人都会想到利用回调函数：
+1234567//示例：使用了回调函数的异步处理http.get(&apos;/v1/get&apos;, function(error, data) &amp;#">
+<meta name="twitter:image" content="http://yoursite.com/images/promises.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/05/15/promise学习笔记/"/>
+
+
+
+
+
+  <title> promise学习笔记 | 前端静径 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">前端静径</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle">前端成长足迹</p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/15/promise学习笔记/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Jessica">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.gif">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="前端静径">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="前端静径" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                promise学习笔记
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-15T14:44:14+08:00">
+                2017-05-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/05/15/promise学习笔记/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/05/15/promise学习笔记/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>一直想写一篇关于promise的文来总结一下之前零零散散的promise知识点，趁着工作闲暇，来做个总结。PS:本文适合有一定<code>JavaScript</code>基础的童鞋阅读。</p>
+<h1 id="什么是promise"><a href="#什么是promise" class="headerlink" title="什么是promise"></a>什么是promise</h1><p>如果说到JavaScript的异步处理，我想大多数人都会想到利用回调函数：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//示例：使用了回调函数的异步处理</span></div><div class="line">http.get(<span class="string">'/v1/get'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">error, data</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (error) &#123;</div><div class="line">        <span class="comment">//错误时的处理</span></div><div class="line">    &#125;</div><div class="line">    <span class="comment">//成功时的处理</span></div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>像上面这样基于回调函数的异步处理如果统一参数使用规则的话，写法也会很明了。但是，这也仅是编码规约而已，即使采用不同的写法也不会报错。</p>
+<p>而<code>Promise</code>则是把类似的异步处理对象和处理规则进行规范化，并按照采用统一的接口来编写，而采取规定方法之外的写法都会报错。下面看一个例子：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> promise = http.get(<span class="string">'/v1/get'</span>);</div><div class="line">promise.then(<span class="function"><span class="keyword">function</span>(<span class="params">result</span>) </span>&#123;</div><div class="line">    <span class="comment">//成功时的处理</span></div><div class="line">&#125;).catch(<span class="function"><span class="keyword">function</span>(<span class="params">error</span>) </span>&#123;</div><div class="line">    <span class="comment">//错误时的处理</span></div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>可以看到，这里在使用promise进行一步处理的时候，我们必须按照接口规定的方法编写处理代码。也就是说，除promise对象规定的方法(这里的 <code>then</code> 或 <code>catch</code>)以外的方法都是不可以使用的， 而不会像回调函数方式那样可以自己自由的定义回调函数的参数，而必须严格遵守固定、统一的编程方式来编写代码。这样，基于Promise的统一接口的做法， 就可以形成基于接口的各种各样的异步处理模式。</p>
+<p>但这并不是使用<code>promise</code>的足够理由，<code>promise</code>为异步操作提供了统一的接口，能让代码不至于陷入回调嵌套的死路中，它的强大之处在于它的链式调用（文章后面会有提及）。</p>
+<h1 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h1><p>promise的语法：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve, reject</span>) </span>&#123;</div><div class="line">    <span class="comment">//待处理的异步逻辑</span></div><div class="line">    <span class="comment">//处理结束后，调用resolve或reject方法</span></div><div class="line">&#125;)</div></pre></td></tr></table></figure></p>
+<p>新建一个<code>promise</code>很简单，只需要<code>new</code>一个<code>promise</code>对象即可。所以<code>promise</code>本质上就是一个函数，它接受一个函数作为参数，并且会返回<code>promise对象</code>，这就给链式调用提供了基础。</p>
+<p>其实<code>Promise</code>函数的使命，就是构建出它的实例，并且负责帮我们管理这些实例。而这些实例有以下三种状态：</p>
+<ol>
+<li>pending: 初始状态，位履行或拒绝</li>
+<li>fulfilled: 意味着操作成功完成</li>
+<li>rejected: 意味着操作失败</li>
+</ol>
+<p><code>pending</code> 状态的 <code>Promise对象</code>可能以 <code>fulfilled</code>状态返回了一个值，也可能被某种理由（异常信息）拒绝（<code>reject</code>）了。当其中任一种情况出现时，<code>Promise</code> 对象的 <code>then</code> 方法绑定的处理方法（<code>handlers</code>）就会被调用，<code>then</code>方法分别指定了<code>resolve</code>方法和<code>reject</code>方法的回调函数</p>
+<p>一图胜千言：</p>
+<p><img src="/images/promises.png" alt="alt promise图解"></p>
+<p>简单的示例:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> promise = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve, reject</span>) </span>&#123;</div><div class="line">  <span class="keyword">if</span> (<span class="comment">/* 异步操作成功 */</span>)&#123;</div><div class="line">    resolve(value);</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    reject(error);</div><div class="line">  &#125;</div><div class="line">&#125;);</div><div class="line"></div><div class="line">promise.then(<span class="function"><span class="keyword">function</span>(<span class="params">value</span>) </span>&#123;</div><div class="line">  <span class="comment">// 如果调用了resolve方法，执行此函数</span></div><div class="line">&#125;, <span class="function"><span class="keyword">function</span>(<span class="params">value</span>) </span>&#123;</div><div class="line">  <span class="comment">// 如果调用了reject方法，执行此函数</span></div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<p>上述代码很清晰的展示了promise对象运行的机制。下面再看一个示例：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> getJSON = <span class="function"><span class="keyword">function</span>(<span class="params">url</span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> promise = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve, reject</span>)</span>&#123;</div><div class="line">    <span class="keyword">var</span> client = <span class="keyword">new</span> XMLHttpRequest();</div><div class="line">    client.open(<span class="string">"GET"</span>, url);</div><div class="line">    client.onreadystatechange = handler;</div><div class="line">    client.responseType = <span class="string">"json"</span>;</div><div class="line">    client.setRequestHeader(<span class="string">"Accept"</span>, <span class="string">"application/json"</span>);</div><div class="line">    client.send();</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">handler</span>(<span class="params"></span>) </span>&#123;</div><div class="line">      <span class="keyword">if</span> (<span class="keyword">this</span>.status === <span class="number">200</span>) &#123; </div><div class="line">              resolve(<span class="keyword">this</span>.response); </div><div class="line">          &#125; <span class="keyword">else</span> &#123; </div><div class="line">              reject(<span class="keyword">new</span> <span class="built_in">Error</span>(<span class="keyword">this</span>.statusText)); </div><div class="line">          &#125;</div><div class="line">    &#125;;</div><div class="line">  &#125;);</div><div class="line"></div><div class="line">  <span class="keyword">return</span> promise;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">getJSON(<span class="string">"/posts.json"</span>).then(<span class="function"><span class="keyword">function</span>(<span class="params">json</span>) </span>&#123;</div><div class="line">  <span class="built_in">console</span>.log(<span class="string">'Contents: '</span> + json);</div><div class="line">&#125;, <span class="function"><span class="keyword">function</span>(<span class="params">error</span>) </span>&#123;</div><div class="line">  <span class="built_in">console</span>.error(<span class="string">'出错了'</span>, error);</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<p>上面代码中，resolve方法和reject方法调用时，都带有参数。它们的参数会被传递给回调函数。reject方法的参数通常是Error对象的实例，而resolve方法的参数除了正常的值以外，还可能是另一个Promise实例，比如像下面这样。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> p1 = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve, reject</span>)</span>&#123;</div><div class="line">  <span class="comment">// ... some code</span></div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="keyword">var</span> p2 = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve, reject</span>)</span>&#123;</div><div class="line">  <span class="comment">// ... some code</span></div><div class="line">  resolve(p1);</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>上面代码中，p1和p2都是Promise的实例，但是p2的resolve方法将p1作为参数，这时p1的状态就会传递给p2。如果调用的时候，p1的状态是pending，那么p2的回调函数就会等待p1的状态改变；如果p1的状态已经是fulfilled或者rejected，那么p2的回调函数将会立刻执行。</p>
+<h1 id="promise的链式操作"><a href="#promise的链式操作" class="headerlink" title="promise的链式操作"></a>promise的链式操作</h1><p>正如前面提到的，Promise.prototype.then方法返回的是一个新的Promise对象，因此可以采用链式写法。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">getJSON(<span class="string">"/visa.json"</span>).then(<span class="function"><span class="keyword">function</span>(<span class="params">json</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> json.name;</div><div class="line">&#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params">name</span>) </span>&#123;</div><div class="line">  <span class="comment">// proceed</span></div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>上面的代码使用then方法，依次指定了两个回调函数。第一个回调函数完成以后，会将返回结果作为参数，传入第二个回调函数。</p>
+<p>如果前一个回调函数返回的是Promise对象，这时后一个回调函数就会等待该Promise对象有了运行结果，才会进一步调用。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">getJSON(<span class="string">"/visa/get.json"</span>).then(<span class="function"><span class="keyword">function</span>(<span class="params">post</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> getJSON(post.jobURL);</div><div class="line">&#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params">jobs</span>) </span>&#123;</div><div class="line">  <span class="comment">// 对jobs进行处理</span></div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>这种设计使得嵌套的异步操作，可以被很容易得改写，从回调函数的“横向发展”改为“向下发展”。</p>
+<h1 id="promise捕获错误"><a href="#promise捕获错误" class="headerlink" title="promise捕获错误"></a>promise捕获错误</h1><p>Promise.prototype.catch方法是Promise.prototype.then(null, rejection)的别名，用于指定发生错误时的回调函数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">getJSON(<span class="string">"/visa.json"</span>).then(<span class="function"><span class="keyword">function</span>(<span class="params">result</span>) </span>&#123;</div><div class="line">  <span class="comment">// some code</span></div><div class="line">&#125;).catch(<span class="function"><span class="keyword">function</span>(<span class="params">error</span>) </span>&#123;</div><div class="line">  <span class="comment">// 处理前一个回调函数运行时发生的错误</span></div><div class="line">  <span class="built_in">console</span>.log(<span class="string">'出错啦！'</span>, error);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>Promise对象的错误具有“冒泡”性质，会一直向后传递，直到被捕获为止。也就是说，错误总是会被下一个catch语句捕获。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">getJSON(<span class="string">"/visa.json"</span>).then(<span class="function"><span class="keyword">function</span>(<span class="params">json</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> json.name;</div><div class="line">&#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params">name</span>) </span>&#123;</div><div class="line">  <span class="comment">// proceed</span></div><div class="line">&#125;).catch(<span class="function"><span class="keyword">function</span>(<span class="params">error</span>) </span>&#123;</div><div class="line">    <span class="comment">//处理前面任一个then函数抛出的错误</span></div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h1 id="其他常用的promise方法"><a href="#其他常用的promise方法" class="headerlink" title="其他常用的promise方法"></a>其他常用的promise方法</h1><h2 id="Promise-all方法，Promise-race方法"><a href="#Promise-all方法，Promise-race方法" class="headerlink" title="Promise.all方法，Promise.race方法"></a>Promise.all方法，Promise.race方法</h2><p>Promise.all方法用于将多个Promise实例，包装成一个新的Promise实例。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> p = <span class="built_in">Promise</span>.all([p1,p2,p3]);</div></pre></td></tr></table></figure>
+<p>上面代码中，Promise.all方法接受一个数组作为参数，p1、p2、p3都是Promise对象的实例。（Promise.all方法的参数不一定是数组，但是必须具有iterator接口，且返回的每个成员都是Promise实例。）</p>
+<p>p的状态由p1、p2、p3决定，分成两种情况。</p>
+<ol>
+<li><p>只有p1、p2、p3的状态都变成fulfilled，p的状态才会变成fulfilled，此时p1、p2、p3的返回值组成一个数组，传递给p的回调函数。</p>
+</li>
+<li><p>只要p1、p2、p3之中有一个被rejected，p的状态就变成rejected，此时第一个被reject的实例的返回值，会传递给p的回调函数。</p>
+</li>
+</ol>
+<p>下面是一个具体的例子。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 生成一个Promise对象的数组</span></div><div class="line"><span class="keyword">var</span> promises = [<span class="number">2</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">11</span>, <span class="number">13</span>].map(<span class="function"><span class="keyword">function</span>(<span class="params">id</span>)</span>&#123;</div><div class="line">  <span class="keyword">return</span> getJSON(<span class="string">"/get/addr"</span> + id + <span class="string">".json"</span>);</div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="built_in">Promise</span>.all(promises).then(<span class="function"><span class="keyword">function</span>(<span class="params">posts</span>) </span>&#123;</div><div class="line">  <span class="comment">// ...  </span></div><div class="line">&#125;).catch(<span class="function"><span class="keyword">function</span>(<span class="params">reason</span>)</span>&#123;</div><div class="line">  <span class="comment">// ...</span></div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>Promise.race方法同样是将多个Promise实例，包装成一个新的Promise实例。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> p = <span class="built_in">Promise</span>.race([p1,p2,p3]);</div></pre></td></tr></table></figure>
+<p>上面代码中，只要p1、p2、p3之中有一个实例率先改变状态，p的状态就跟着改变。那个率先改变的Promise实例的返回值，就传递给p的返回值。</p>
+<p>如果Promise.all方法和Promise.race方法的参数，不是Promise实例，就会先调用下面讲到的Promise.resolve方法，将参数转为Promise实例，再进一步处理。</p>
+<h2 id="Promise-resolve方法，Promise-reject方法"><a href="#Promise-resolve方法，Promise-reject方法" class="headerlink" title="Promise.resolve方法，Promise.reject方法"></a>Promise.resolve方法，Promise.reject方法</h2><p>有时需要将现有对象转为Promise对象，Promise.resolve方法就起到这个作用。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> jsPromise = <span class="built_in">Promise</span>.resolve($.ajax(<span class="string">'/whatever.json'</span>));</div></pre></td></tr></table></figure>
+<p>上面代码将jQuery生成deferred对象，转为一个新的ES6的Promise对象。</p>
+<p>如果Promise.resolve方法的参数，不是具有then方法的对象（又称thenable对象），则返回一个新的Promise对象，且它的状态为fulfilled。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> p = <span class="built_in">Promise</span>.resolve(<span class="string">'Hello'</span>);</div><div class="line"></div><div class="line">p.then(<span class="function"><span class="keyword">function</span> (<span class="params">s</span>)</span>&#123;</div><div class="line">  <span class="built_in">console</span>.log(s)</div><div class="line">&#125;);</div><div class="line"><span class="comment">// Hello</span></div></pre></td></tr></table></figure>
+<p>上面代码生成一个新的Promise对象的实例p，它的状态为fulfilled，所以回调函数会立即执行，Promise.resolve方法的参数就是回调函数的参数。</p>
+<p>如果Promise.resolve方法的参数是一个Promise对象的实例，则会被原封不动地返回。</p>
+<p>Promise.reject(reason)方法也会返回一个新的Promise实例，该实例的状态为rejected。Promise.reject方法的参数reason，会被传递给实例的回调函数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> p = <span class="built_in">Promise</span>.reject(<span class="string">'出错啦'</span>);</div><div class="line"></div><div class="line">p.then(<span class="literal">null</span>, <span class="function"><span class="keyword">function</span> (<span class="params">error</span>)</span>&#123;</div><div class="line">  <span class="built_in">console</span>.log(error)</div><div class="line">&#125;);</div><div class="line"><span class="comment">// 出错了</span></div></pre></td></tr></table></figure>
+<p>上面代码生成一个Promise对象的实例p，状态为rejected，回调函数会立即执行。</p>
+<h1 id="题外话：async函数"><a href="#题外话：async函数" class="headerlink" title="题外话：async函数"></a>题外话：async函数</h1><p>async函数是es7提案出来的语法，并不属于es6，但是已经有一些平台和编辑器支持这种函数了，所以这里也做一下了解。</p>
+<p>async函数是用来取代回调函数的另一种方法。</p>
+<p>只要函数名之前加上async关键字，就表明该函数内部有异步操作。该异步操作应该返回一个Promise对象，前面用await关键字注明。当函数执行的时候，一旦遇到await就会先返回，等到触发的异步操作完成，再接着执行函数体内后面的语句。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">getStockPrice</span>(<span class="params">symbol, currency</span>) </span>&#123;</div><div class="line">    <span class="keyword">let</span> price = <span class="keyword">await</span> getStockPrice(symbol);</div><div class="line">    <span class="keyword">return</span> convert(price, currency);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上面代码是一个获取股票报价的函数，函数前面的async关键字，表明该函数将返回一个Promise对象。调用该函数时，当遇到await关键字，立即返回它后面的表达式（getStockPrice函数）产生的Promise对象，不再执行函数体内后面的语句。等到getStockPrice完成，再自动回到函数体内，执行剩下的语句。</p>
+<p>下面是一个更一般性的例子。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">timeout</span>(<span class="params">ms</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve</span>) =&gt;</span> &#123;</div><div class="line">    setTimeout(resolve, ms);</div><div class="line">  &#125;);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">asyncValue</span>(<span class="params">value</span>) </span>&#123;</div><div class="line">  <span class="keyword">await</span> timeout(<span class="number">50</span>);</div><div class="line">  <span class="keyword">return</span> value;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上面代码中，asyncValue函数前面有async关键字，表明函数体内有异步操作。执行的时候，遇到await语句就会先返回，等到timeout函数执行完毕，再返回value。</p>
+<p>个人觉得async函数将异步发挥到了极致，代码看上去更加简洁，更加舒服了，而且其流程也很好理解。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>promise作为异步操作的规则，确实给开发带来了不少便利，至少不用像回调那样，出现函数里面套函数这种无限的嵌套的情况，promise让你的代码变得更加的优雅了。当然如果之后async函数变得更加普及，那么就更好了。</p>
+<p>下面来看看下面这道题目，大家可以思考下结果是多少？</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">console</span>.log(<span class="number">1</span>);</div><div class="line"><span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span> (<span class="params">resolve, reject</span>)</span>&#123;</div><div class="line">    reject(<span class="literal">true</span>);</div><div class="line">    <span class="built_in">window</span>.setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>)</span>&#123;</div><div class="line">        resolve(<span class="literal">false</span>);</div><div class="line">    &#125;, <span class="number">0</span>);</div><div class="line">&#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="number">2</span>);</div><div class="line">&#125;, <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="number">3</span>);</div><div class="line">&#125;);</div><div class="line"><span class="built_in">console</span>.log(<span class="number">4</span>);</div></pre></td></tr></table></figure>
+<p>答案我就不贴出来了，给大家思考的空间，实在不知道结果的也可以直接复制这段代码到浏览器控制台执行下，也能很快的出结果。</p>
+<h1 id="展望"><a href="#展望" class="headerlink" title="展望"></a>展望</h1><p>很好奇promise内部的实现机理，接下来我会深入研究下promise实现原理，有成果了给大家分享哦~</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/javascript-es6-promise/" rel="tag"># javascript es6 promise</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/27/应用vue2-vuex-vue-router-webpack2-es6-express-mysql技术编写简单的todolist/" rel="next" title="应用vue2+vuex+vue-router+webpack2+es6+express+mysql技术编写简单的todolist">
+                <i class="fa fa-chevron-left"></i> 应用vue2+vuex+vue-router+webpack2+es6+express+mysql技术编写简单的todolist
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/05/15/promise学习笔记/"
+           data-title="promise学习笔记" data-url="http://yoursite.com/2017/05/15/promise学习笔记/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Jessica" />
+          <p class="site-author-name" itemprop="name">Jessica</p>
+          <p class="site-description motion-element" itemprop="description">前端 node JavaScript 学习 技术杂谈</p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是promise"><span class="nav-number">2.</span> <span class="nav-text">什么是promise</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基本用法"><span class="nav-number">3.</span> <span class="nav-text">基本用法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#promise的链式操作"><span class="nav-number">4.</span> <span class="nav-text">promise的链式操作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#promise捕获错误"><span class="nav-number">5.</span> <span class="nav-text">promise捕获错误</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其他常用的promise方法"><span class="nav-number">6.</span> <span class="nav-text">其他常用的promise方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Promise-all方法，Promise-race方法"><span class="nav-number">6.1.</span> <span class="nav-text">Promise.all方法，Promise.race方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Promise-resolve方法，Promise-reject方法"><span class="nav-number">6.2.</span> <span class="nav-text">Promise.resolve方法，Promise.reject方法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#题外话：async函数"><span class="nav-number">7.</span> <span class="nav-text">题外话：async函数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#展望"><span class="nav-number">9.</span> <span class="nav-text">展望</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jessica</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+</br>
+<span id="busuanzi_container_site_pv">
+  Total <span id="busuanzi_value_site_pv"></span> views.
+  您是jessica的第<span id="busuanzi_value_site_uv"></span>个小伙伴
+  <span id="busuanzi_value_page_pv"></span> Hits
+</span>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"mengera88"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
