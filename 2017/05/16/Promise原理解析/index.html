@@ -96,7 +96,7 @@
 引子为了让大家更容易理解，我们从一个场景开始讲解">
 <meta property="og:image" content="http://yoursite.com/images/promiseState.png">
 <meta property="og:image" content="http://yoursite.com/images/promiseAnalysis.png">
-<meta property="og:updated_time" content="2017-05-18T09:19:27.000Z">
+<meta property="og:updated_time" content="2017-05-18T11:16:51.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="30分钟，让你彻底明白Promise原理">
 <meta name="twitter:description" content="前言前一阵子记录了promise的一些常规用法，这篇文章再深入一个层次，来分析分析promise的这种规则机制是如何实现的。ps:本文适合已经对promise的用法有所了解的人阅读,如果对其用法还不是太了解，可以移步我的上一篇博文。
@@ -367,9 +367,9 @@
 <li><code>handle</code>方法是<code>promise</code>内部的方法。<code>then</code>方法传入的形参<code>onFulfilled</code>以及创建新<code>Promise</code>实例时传入的<code>resolve</code>均被<code>push</code>到当前<code>promise</code>的<code>callbacks</code>队列中，这是衔接当前<code>promise</code>和后邻<code>promise</code>的关键所在（这里一定要好好的分析下handle的作用）。</li>
 <li><code>getUserId</code>生成的<code>promise</code>（简称<code>getUserId promise</code>）异步操作成功，执行其内部方法<code>resolve</code>，传入的参数正是异步操作的结果<code>id</code></li>
 <li>调用<code>handle</code>方法处理<code>callbacks</code>队列中的回调：<code>getUserJobById</code>方法，生成新的<code>promise</code>（<code>getUserJobById promise</code>）</li>
-<li>执行之前由<code>getUserId promise</code>的<code>then</code>方法生成的新<code>promise</code>的<code>resolve</code>方法，传入参数为<code>getUserJobById promise</code>。这种情况下，会将该<code>resolve</code>方法传入<code>getUserJobById promise</code>的<code>then</code>方法中，并直接返回。</li>
-<li>在<code>getUserJobById promise</code>异步操作成功时，执行其<code>callbacks</code>中的回调：<code>getUserId promise</code>中的<code>resolve</code>方法</li>
-<li>最后执行<code>getUserId promise</code>的后邻<code>promise</code>的<code>callbacks</code>中的回调。</li>
+<li>执行之前由<code>getUserId promise</code>的<code>then</code>方法生成的新<code>promise</code>(称为<code>bridge promise</code>)的<code>resolve</code>方法，传入参数为<code>getUserJobById promise</code>。这种情况下，会将该<code>resolve</code>方法传入<code>getUserJobById promise</code>的<code>then</code>方法中，并直接返回。</li>
+<li>在<code>getUserJobById promise</code>异步操作成功时，执行其<code>callbacks</code>中的回调：<code>getUserId bridge promise</code>中的<code>resolve</code>方法</li>
+<li>最后执行<code>getUserId bridge promise</code>的后邻<code>promise</code>的<code>callbacks</code>中的回调。</li>
 </ol>
 <p>更直白的可以看下面的图，一图胜千言（都是根据自己的理解画出来的，如有不对欢迎指正）：</p>
 <p><img src="/images/promiseAnalysis.png" alt="alt promise analysis"></p>
