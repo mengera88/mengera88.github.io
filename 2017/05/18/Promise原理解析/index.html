@@ -96,7 +96,7 @@
 引子为了让大家更容易理解，我们从一个场景开始讲解">
 <meta property="og:image" content="http://yoursite.com/images/promiseState.png">
 <meta property="og:image" content="http://yoursite.com/images/promiseAnalysis.png">
-<meta property="og:updated_time" content="2017-05-18T12:14:14.000Z">
+<meta property="og:updated_time" content="2017-05-18T12:28:06.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="30分钟，让你彻底明白Promise原理">
 <meta name="twitter:description" content="前言前一阵子记录了promise的一些常规用法，这篇文章再深入一个层次，来分析分析promise的这种规则机制是如何实现的。ps:本文适合已经对promise的用法有所了解的人阅读,如果对其用法还不是太了解，可以移步我的上一篇博文。
@@ -389,6 +389,7 @@
 <li>通过Promise.prototype.then和Promise.prototype.catch方法将观察者方法注册到被观察者Promise对象中，同时返回一个新的Promise对象，以便可以链式调用。</li>
 <li>被观察者管理内部pending、fulfilled和rejected的状态转变，同时通过构造函数中传递的resolve和reject方法以主动触发状态转变和通知观察者。</li>
 </ol>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p><a href="http://coderlt.coding.me/2016/12/04/promise-in-depth-an-introduction-2/" target="_blank" rel="external">深入理解 Promise</a><br><a href="http://www.mattgreer.org/articles/promises-in-wicked-detail/" target="_blank" rel="external">JavaScript Promises … In Wicked Detail</a></p>
 
       
     </div>
@@ -549,7 +550,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#引子"><span class="nav-number">2.</span> <span class="nav-text">引子</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#原理剖析"><span class="nav-number">3.</span> <span class="nav-text">原理剖析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#极简promise雏形"><span class="nav-number">3.1.</span> <span class="nav-text">极简promise雏形</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#加入延时机制"><span class="nav-number">3.2.</span> <span class="nav-text">加入延时机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#加入状态"><span class="nav-number">3.3.</span> <span class="nav-text">加入状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#串行Promise"><span class="nav-number">3.4.</span> <span class="nav-text">串行Promise</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#失败处理"><span class="nav-number">3.5.</span> <span class="nav-text">失败处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#异常处理"><span class="nav-number">3.6.</span> <span class="nav-text">异常处理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#引子"><span class="nav-number">2.</span> <span class="nav-text">引子</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#原理剖析"><span class="nav-number">3.</span> <span class="nav-text">原理剖析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#极简promise雏形"><span class="nav-number">3.1.</span> <span class="nav-text">极简promise雏形</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#加入延时机制"><span class="nav-number">3.2.</span> <span class="nav-text">加入延时机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#加入状态"><span class="nav-number">3.3.</span> <span class="nav-text">加入状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#串行Promise"><span class="nav-number">3.4.</span> <span class="nav-text">串行Promise</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#失败处理"><span class="nav-number">3.5.</span> <span class="nav-text">失败处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#异常处理"><span class="nav-number">3.6.</span> <span class="nav-text">异常处理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-number">5.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
             
 
           </div>
