@@ -119,7 +119,7 @@
     fancybox: true,
     motion: true,
     duoshuo: {
-      userId: '0',
+      userId: 'undefined',
       author: '博主'
     },
     algolia: {
@@ -496,21 +496,21 @@
            data-title="应用vue2+vuex+vue-router+webpack2+es6+express+mysql技术编写简单的todolist" data-url="http://yoursite.com/2017/04/27/应用vue2-vuex-vue-router-webpack2-es6-express-mysql技术编写简单的todolist/">
       </div>
     
-    <div id="hypercomments_widget"></div>
-    <script type="text/javascript">
-    _hcwp = window._hcwp || [];
-    _hcwp.push({widget:"Stream", widget_id: 91887});
-    (function() {
-    if("HC_LOAD_INIT" in window)return;
-    HC_LOAD_INIT = true;
-    var lang = (navigator.language || navigator.systemLanguage || navigator.userLanguage || "en").substr(0, 2).toLowerCase();
-    var hcc = document.createElement("script"); hcc.type = "text/javascript"; hcc.async = true;
-    hcc.src = ("https:" == document.location.protocol ? "https" : "http")+"://w.hypercomments.com/widget/hc/91887/"+lang+"/widget.js";
-    var s = document.getElementsByTagName("script")[0];
-    s.parentNode.insertBefore(hcc, s.nextSibling);
-    })();
-    </script>
-    <a href="http://hypercomments.com" class="hc-link" title="comments widget">comments powered by HyperComments</a>
+    <div id="container"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+var gitment = new Gitment({
+  id: '页面 ID', // 可选。默认为 location.href
+  owner: 'mengera88',
+  repo: 'mengera88.github.io',
+  oauth: {
+    client_id: 'd7cbe4a57bd21cf9e226',
+    client_secret: 'c500a92c31b1f17fc147b0e191448accdf310ece',
+  },
+})
+gitment.render('container')
+</script>
   </div>
 
 
@@ -747,11 +747,6 @@
     })();
   </script>
 
-  
-    
-    
-    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
-    <script src="/js/src/hook-duoshuo.js"></script>
   
 
 
