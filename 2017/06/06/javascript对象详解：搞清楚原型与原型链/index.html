@@ -1,0 +1,705 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="javascript 对象 原型 前端," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言本篇文章用来记录下最近研究对象的一些心得，做一个记录与总结，以加深自己的印象，同时，希望也能给正在学习中的你一点启发。本文适合有一定JavaScript基础的童鞋阅读。
+引言在JavaScript中，万物皆对象。咱们写一个JavaScript对象，大多数时候是用构造函数创建一个对象或者用对象字面量创建一个对象。比如：
+12345678910111213//通过构造函数来创建对象function">
+<meta property="og:type" content="article">
+<meta property="og:title" content="javascript对象详解：__proto__和prototype的区别和联系">
+<meta property="og:url" content="http://yoursite.com/2017/06/06/javascript对象详解：搞清楚原型与原型链/index.html">
+<meta property="og:site_name" content="前端静径">
+<meta property="og:description" content="前言本篇文章用来记录下最近研究对象的一些心得，做一个记录与总结，以加深自己的印象，同时，希望也能给正在学习中的你一点启发。本文适合有一定JavaScript基础的童鞋阅读。
+引言在JavaScript中，万物皆对象。咱们写一个JavaScript对象，大多数时候是用构造函数创建一个对象或者用对象字面量创建一个对象。比如：
+12345678910111213//通过构造函数来创建对象function">
+<meta property="og:image" content="http://yoursite.com/images/object_proto.png">
+<meta property="og:updated_time" content="2017-06-07T06:41:25.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="javascript对象详解：__proto__和prototype的区别和联系">
+<meta name="twitter:description" content="前言本篇文章用来记录下最近研究对象的一些心得，做一个记录与总结，以加深自己的印象，同时，希望也能给正在学习中的你一点启发。本文适合有一定JavaScript基础的童鞋阅读。
+引言在JavaScript中，万物皆对象。咱们写一个JavaScript对象，大多数时候是用构造函数创建一个对象或者用对象字面量创建一个对象。比如：
+12345678910111213//通过构造函数来创建对象function">
+<meta name="twitter:image" content="http://yoursite.com/images/object_proto.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/06/06/javascript对象详解：搞清楚原型与原型链/"/>
+
+
+
+
+
+  <title> javascript对象详解：__proto__和prototype的区别和联系 | 前端静径 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">前端静径</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle">前端成长足迹</p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/06/javascript对象详解：搞清楚原型与原型链/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Jessica">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.gif">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="前端静径">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="前端静径" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                javascript对象详解：__proto__和prototype的区别和联系
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-06-06T16:37:57+08:00">
+                2017-06-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/06/06/javascript对象详解：搞清楚原型与原型链/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/06/06/javascript对象详解：搞清楚原型与原型链/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>本篇文章用来记录下最近研究对象的一些心得，做一个记录与总结，以加深自己的印象，同时，希望也能给正在学习中的你一点启发。本文适合有一定JavaScript基础的童鞋阅读。</p>
+<h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><p>在JavaScript中，万物皆对象。咱们写一个JavaScript对象，大多数时候是用构造函数创建一个对象或者用对象字面量创建一个对象。比如：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//通过构造函数来创建对象</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Person</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="comment">//...</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">var</span> person1 = <span class="keyword">new</span> Person();</div><div class="line"></div><div class="line"><span class="comment">//通过对象字面量创建对象</span></div><div class="line"><span class="keyword">var</span> person2 = &#123;</div><div class="line">    <span class="attr">name</span>: <span class="string">'jessica'</span>,</div><div class="line">    <span class="attr">age</span>: <span class="number">27</span>,</div><div class="line">    <span class="attr">job</span>: <span class="string">'teacher'</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>当然还有其他方式创建对象，这里就不列举出来了。那么问题来了，通过不同的方式创建的对象有什么区别呢？</p>
+<p>我们知道，每个JS对象一定对应一个原型对象，并从原型对象继承属性和方法。那么对象是怎么和这个原型对象对应的呢？带着问题慢慢看下面的内容吧~</p>
+<h1 id="proto-和prototype概念区分"><a href="#proto-和prototype概念区分" class="headerlink" title="__proto__和prototype概念区分"></a><code>__proto__</code>和<code>prototype</code>概念区分</h1><p>其实说<code>__proto__</code>并不准确，确切的说是对象的<code>[[prototype]]</code>属性，只不过在主流的浏览器中，都用<code>__proto__</code>来代表<code>[[prototype]]</code>属性，因为<code>[[prototype]]</code>只是一个标准，而针对这个标准，不同的浏览器有不同的实现方式。在ES5中用<code>Object.getPrototypeOf</code>函数获得一个对象的<code>[[prototype]]</code>。ES6中，使用<code>Object.setPrototypeOf</code>可以直接修改一个对象的<code>[[prototype]]</code>。为了方便，我下面的文章用<code>__proto__</code>来代表对象的<code>[[prototype]]</code>。</p>
+<p>而<code>prototype</code>属性是只有函数才特有的属性，当你创建一个函数时，<code>js</code>会自动为这个函数加上<code>prototype</code>属性，值是一个空对象。所以，函数在<code>js</code>中是非常特殊的，是所谓的<code>一等公民</code>。<br>那么<code>__proto__</code>和<code>prototype</code>是怎么联系起来的呢？让我们来看下下面的代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Person</span>(<span class="params">name, age</span>) </span>&#123;</div><div class="line">    <span class="keyword">this</span>.name = name;</div><div class="line">    <span class="keyword">this</span>.age = age;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">var</span> person1 = <span class="keyword">new</span> Person(<span class="string">'jessica'</span>, <span class="number">27</span>);</div></pre></td></tr></table></figure>
+<h2 id="当我们new-Person-的时候到底发生了什么？"><a href="#当我们new-Person-的时候到底发生了什么？" class="headerlink" title="当我们new Person()的时候到底发生了什么？"></a>当我们<code>new Person()</code>的时候到底发生了什么？</h2><p><code>new</code>一个构造函数，相当于实例化一个对象，这期间其实进行了这三个步骤：</p>
+<ol>
+<li>创建对象，设为o，即： <code>var o = {}</code>;</li>
+<li>上文提到了，每个对象都有<code>__proto__</code>属性，该属性指向一个对象，这里，将<code>o</code>对象的<code>__Proto__</code>指向构造函数<code>Person</code>的原型对象（<code>Person.prototype</code>）;</li>
+<li>将<code>o</code>作为<code>this</code>去调用构造函数<code>Person</code>，从而设置<code>o</code>的属性和方法并初始化。</li>
+</ol>
+<p>当这3步完成，这个<code>o</code>对象就与构造函数<code>Person</code>再无联系，这个时候即使构造函数<code>Person</code>再加任何成员，都不再影响已经实例化的<code>o</code>对象了。<br>此时，<code>o</code>对象具有了<code>name</code>和<code>age</code>属性，同时具有了构造函数<code>Person</code>的原型对象的所有成员，当然，此时该原型对象是没有成员的。</p>
+<p>现在大家都明白了吧，简单的总结下就是：</p>
+<p><strong>js在创建对象的时候，都有一个叫做<code>__proto__</code>的内置属性，用于指向创建它的函数对象的原型对象<code>prototype</code></strong></p>
+<p>那么一个对象的<code>__proto__</code>属性究竟怎么决定呢？答案显而易见了：是由构造该对象的方法决定的。</p>
+<h1 id="创建对象的不同方法解析"><a href="#创建对象的不同方法解析" class="headerlink" title="创建对象的不同方法解析"></a>创建对象的不同方法解析</h1><p>下面讲解三种常见的创建对象方法。</p>
+<h2 id="对象字面量"><a href="#对象字面量" class="headerlink" title="对象字面量"></a>对象字面量</h2><p>比如：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> Person = &#123;</div><div class="line">    <span class="attr">name</span>: <span class="string">'jessica'</span>,</div><div class="line">    <span class="attr">age</span>: <span class="number">27</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这种形式就是对象字面量，通过对象字面量构造出的对象，其<code>__proto__</code>指向<code>Object.prototype</code>。</p>
+<p>所以，其实<code>Object</code>是一个函数也不难理解了。<strong>Object、Function都是是js自带的函数对象。</strong></p>
+<p>可以跑下面的代码看看：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">console</span>.log(<span class="keyword">typeof</span> <span class="built_in">Object</span>); </div><div class="line"><span class="built_in">console</span>.log(<span class="keyword">typeof</span> <span class="built_in">Function</span>);</div></pre></td></tr></table></figure>
+<h2 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h2><p>就如我前面讲的,形如：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Person</span>(<span class="params"></span>)</span>&#123;&#125;</div><div class="line"><span class="keyword">var</span> person1 = <span class="keyword">new</span> Person();</div></pre></td></tr></table></figure></p>
+<p>这种形式创建对象的方式就是通过构造函数创建对象，这里的构造函数是<code>Person</code>函数。上面也讲过了，通过构造函数创建的对象，其<code>__proto</code>指向的是构造函数的<code>prototype</code>属性指向的对象。</p>
+<h2 id="Object-create"><a href="#Object-create" class="headerlink" title="Object.create"></a>Object.create</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> person1 = &#123;</div><div class="line">    <span class="attr">name</span>: <span class="string">'jessica'</span>,</div><div class="line">    <span class="attr">age</span>: <span class="number">27</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">var</span> person2 = <span class="built_in">Object</span>.create(person1);</div></pre></td></tr></table></figure>
+<p>这种情况下，<code>person2</code>的<code>__proto__</code>指向<code>person1</code>。在没有<code>Object.create</code>函数的时候，人们大多是这样做的：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">Object</span>.create = <span class="function"><span class="keyword">function</span>(<span class="params">p</span>) </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params"></span>)</span>&#123;&#125;;</div><div class="line">    f.prototype = p;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> f();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>一看大家就会明白了。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>其实仔细思考下上面提到的三种创建对象的方法，追究其本质，不难发现，最根本的还是利用构造函数再通过<code>new</code>来创建对象。所谓的对象字面量也只不过是语法糖而已，本质上是<code>var o = new Object(); o.xx = xx;o.yy=yy;</code>。 所以，函数真不愧是js中的<strong>一等公民</strong>呀~</p>
+<h1 id="原型链"><a href="#原型链" class="headerlink" title="原型链"></a>原型链</h1><p>既然已经提到了原型，就不得不提一下原型链了，毕竟这是实现继承最关键所在，也是js对象精妙所在。</p>
+<p>还记得上文提到的一个总结吗？不记得？没关系，我贴出来让大家温故而知新，哈哈~</p>
+<p><strong>js在创建对象的时候，都有一个叫做<code>__proto__</code>的内置属性，用于指向创建它的函数对象的原型对象<code>prototype</code></strong></p>
+<p>而原型链的基本思想就是利用原型让一个引用类型继承另一个引用类型的属性和方法。</p>
+<p>让我们再简单回顾下构造函数、原型和实例的关系：</p>
+<p>每个构造函数都有一个原型对象，原型对象包含一个指向构造函数的指针（<code>constructor</code>），而实例则包含一个指向原型对象的内部指针（<code>__proto__</code>）。</p>
+<p>我们拿一个例子来讲解：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Person</span>(<span class="params">name, age</span>) </span>&#123;</div><div class="line">    <span class="keyword">this</span>.name = name;</div><div class="line">    <span class="keyword">this</span>.age = age;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">var</span> person1 = <span class="keyword">new</span> Person(<span class="string">'jessica'</span>, <span class="number">27</span>);</div></pre></td></tr></table></figure>
+<p>一图胜前言，我们用画图的形式来讲解下上面的例子：</p>
+<p><img src="/images/object_proto.png" alt="alt 原型链示例1"></p>
+<p>从上图可以看到，其实原型链的顶端是<code>Object.prototype.__proto__</code>,也即为<code>null</code>。</p>
+<h1 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h1><p>函数是<code>js</code>中的一等公民，<code>js</code>在创建对象的时候，都有一个叫做<code>__proto__</code>的内置属性，用于指向创建它的函数对象的原型对象<code>prototype</code>。只有函数有<code>prototype</code>, 当你创建一个函数时，<code>js</code>会自动为这个函数加上<code>prototype</code>属性，值是一个空对象。</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p><a href="http://007sair.github.io/javascript/2015/07/22/js-prototype.html" target="_blank" rel="external">js 对象、原型、继承详解</a><br><a href="https://www.zhihu.com/question/34183746" target="_blank" rel="external">js中<strong>proto</strong>和prototype的区别和关系？</a><br><a href="http://blog.jobbole.com/9648/" target="_blank" rel="external">理解JavaScript原型</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/javascript-对象-原型-前端/" rel="tag"># javascript 对象 原型 前端</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/18/Promise原理解析/" rel="next" title="30分钟，让你彻底明白Promise原理">
+                <i class="fa fa-chevron-left"></i> 30分钟，让你彻底明白Promise原理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/06/06/javascript对象详解：搞清楚原型与原型链/"
+           data-title="javascript对象详解：__proto__和prototype的区别和联系" data-url="http://yoursite.com/2017/06/06/javascript对象详解：搞清楚原型与原型链/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Jessica" />
+          <p class="site-author-name" itemprop="name">Jessica</p>
+          <p class="site-description motion-element" itemprop="description">前端 node JavaScript 学习 技术杂谈</p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#引言"><span class="nav-number">2.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#proto-和prototype概念区分"><span class="nav-number">3.</span> <span class="nav-text">__proto__和prototype概念区分</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#当我们new-Person-的时候到底发生了什么？"><span class="nav-number">3.1.</span> <span class="nav-text">当我们new Person()的时候到底发生了什么？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创建对象的不同方法解析"><span class="nav-number">4.</span> <span class="nav-text">创建对象的不同方法解析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#对象字面量"><span class="nav-number">4.1.</span> <span class="nav-text">对象字面量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#构造函数"><span class="nav-number">4.2.</span> <span class="nav-text">构造函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Object-create"><span class="nav-number">4.3.</span> <span class="nav-text">Object.create</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.4.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#原型链"><span class="nav-number">5.</span> <span class="nav-text">原型链</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结-1"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-number">7.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jessica</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+</br>
+<span id="busuanzi_container_site_pv">
+  Total <span id="busuanzi_value_site_pv"></span> views.
+  您是jessica的第<span id="busuanzi_value_site_uv"></span>个小伙伴
+  <span id="busuanzi_value_page_pv"></span> Hits
+</span>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"mengera88"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
