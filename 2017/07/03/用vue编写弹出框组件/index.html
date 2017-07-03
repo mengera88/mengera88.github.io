@@ -1,0 +1,680 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="javascript vue 弹出框组件," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言最近研究了用vue编写弹出框的组件，发现其实这里面的门道还是有很多的。这篇文完全是用来记录总结下最近的学习成果，同时也希望能够帮得上正在学习纠结的你~ps:本文假设你已经了解vue2.0相关框架，因此适合有一定vue2.0基础的同学阅读。
+设计组件的思考其实单纯的编写一个弹出框组件并不难，写一个模板，然后用v-if或者v-show指令还控制组件的出现与消失。真正困扰我的是，这个组件的调用方式，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用vue编写弹出框组件">
+<meta property="og:url" content="http://yoursite.com/2017/07/03/用vue编写弹出框组件/index.html">
+<meta property="og:site_name" content="前端静径">
+<meta property="og:description" content="前言最近研究了用vue编写弹出框的组件，发现其实这里面的门道还是有很多的。这篇文完全是用来记录总结下最近的学习成果，同时也希望能够帮得上正在学习纠结的你~ps:本文假设你已经了解vue2.0相关框架，因此适合有一定vue2.0基础的同学阅读。
+设计组件的思考其实单纯的编写一个弹出框组件并不难，写一个模板，然后用v-if或者v-show指令还控制组件的出现与消失。真正困扰我的是，这个组件的调用方式，">
+<meta property="og:updated_time" content="2017-07-03T07:51:27.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="用vue编写弹出框组件">
+<meta name="twitter:description" content="前言最近研究了用vue编写弹出框的组件，发现其实这里面的门道还是有很多的。这篇文完全是用来记录总结下最近的学习成果，同时也希望能够帮得上正在学习纠结的你~ps:本文假设你已经了解vue2.0相关框架，因此适合有一定vue2.0基础的同学阅读。
+设计组件的思考其实单纯的编写一个弹出框组件并不难，写一个模板，然后用v-if或者v-show指令还控制组件的出现与消失。真正困扰我的是，这个组件的调用方式，">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/07/03/用vue编写弹出框组件/"/>
+
+
+
+
+
+  <title> 用vue编写弹出框组件 | 前端静径 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">前端静径</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle">前端成长足迹</p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/03/用vue编写弹出框组件/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Jessica">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.gif">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="前端静径">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="前端静径" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                用vue编写弹出框组件
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-03T11:13:20+08:00">
+                2017-07-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/07/03/用vue编写弹出框组件/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/07/03/用vue编写弹出框组件/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近研究了用vue编写弹出框的组件，发现其实这里面的门道还是有很多的。这篇文完全是用来记录总结下最近的学习成果，同时也希望能够帮得上正在学习纠结的你~ps:本文假设你已经了解vue2.0相关框架，因此适合有一定vue2.0基础的同学阅读。</p>
+<h1 id="设计组件的思考"><a href="#设计组件的思考" class="headerlink" title="设计组件的思考"></a>设计组件的思考</h1><p>其实单纯的编写一个弹出框组件并不难，写一个模板，然后用<code>v-if</code>或者<code>v-show</code>指令还控制组件的出现与消失。真正困扰我的是，这个组件的调用方式，这个问题纠结了我好久。</p>
+<p>调研了下资料，有些人建议，直接把组件标签插进模板中，然后通过直接控制组件的显示隐藏来控制组件。这样写有好处，就是结构清晰，一目了然，人家一看你的代码就知道你这个页面可能会有弹出框，并且编写的组件就更容易，只需关注内部方法就好了，也不存在事件调用的困扰，维护起来也特别容易。但是缺点也很明显，如果有多个弹窗，并且不知道会有几个弹窗的情况下，感觉就不太好做，并且这种提前写模板的形式，难免会在不弹窗的时候要下载一些js文件，有可能会造成性能浪费。</p>
+<p>也有些人建议，在写好的弹出框组件之外再做一层封装，通过动态调用的方式来控制弹出框的显示与隐藏。这样写的好处是不用事先在模板里面写好该组件的标签，只需要在想调用的地方调用下该组件，就实现了按需使用的目的，符合之前传统前端框架的编码习惯。缺点就是感觉代码写起来比较复杂，层层嵌套，并且感觉这个与<code>MVVM</code>模式的<strong>状态驱动界面</strong>的思想相违背。</p>
+<p>于是我天秤座的纠结病犯了，在选择哪种技术方案的问题上，思考了很久。但是网上搜了很多，发现还是后一种实现方法用的人比较多。后来我又研究了了<code>elementUI</code>和<code>iView</code>的弹出框组件，他们也是沿用的后一种方法，想了一下后一种方法虽然代码易读性不强，但是它真正模拟了浏览器默认的<code>alert</code>事件，在用户需要的地方来调用，一方面节省了代码量，另一方面也很容易解决多个弹窗的情况。最后还是决定用这种模式写一个简单的弹出框组件。主要是体会这其中的机理。废话不多说，来上干货了。有啥不对的地方还请大家多多指教。(ps:对于天秤座的我，虽然选择了后一种方法，但是内心还是钟爱第一种方法，并且后一种方法并没有足够的理由说服我呀，不知道哪位有识之士能够帮忙点醒一下我，晚辈感激不尽)。</p>
+<h1 id="alert组件设计"><a href="#alert组件设计" class="headerlink" title="alert组件设计"></a>alert组件设计</h1><p>单独的设计alert弹出框的逻辑是很简单的，我就直接上代码了：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">transition</span> <span class="attr">name</span>=<span class="string">'fade'</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"alert"</span> <span class="attr">v-if</span>=<span class="string">"showAlert"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"wrap"</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"head"</span>&gt;</span>&#123;&#123;title&#125;&#125;<span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"body"</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">slot</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">p</span>&gt;</span>&#123;&#123;message&#125;&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">slot</span>&gt;</span></div><div class="line">      <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"foot"</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">v-if</span>=<span class="string">"type === 'confirm'"</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">button</span> <span class="attr">class</span>=<span class="string">"btn-base"</span> @<span class="attr">click</span>=<span class="string">"sure"</span>&gt;</span>确定<span class="tag">&lt;/<span class="name">button</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">button</span> <span class="attr">class</span>=<span class="string">"btn-gray"</span> @<span class="attr">click</span>=<span class="string">"cancel"</span>&gt;</span>取消<span class="tag">&lt;/<span class="name">button</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">v-else-if</span>=<span class="string">"type === 'inform'"</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">button</span> <span class="attr">class</span>=<span class="string">"btn-base"</span> @<span class="attr">click</span>=<span class="string">"cancel"</span>&gt;</span>知道了<span class="tag">&lt;/<span class="name">button</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">      <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">transition</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></div><div class="line">export default &#123;</div><div class="line">  name: 'alert',</div><div class="line">  data() &#123;</div><div class="line">    return &#123;</div><div class="line">      showAlert: false,</div><div class="line">    &#125;;</div><div class="line">  &#125;,</div><div class="line">  props: &#123;</div><div class="line">    title: &#123;</div><div class="line">      type: String,</div><div class="line">      default: '提示',</div><div class="line">    &#125;,</div><div class="line">    message: &#123;</div><div class="line">      type: String,</div><div class="line">    &#125;,</div><div class="line">    type: &#123;  // 可以有confirm, 和inform两个类型</div><div class="line">      type: String,</div><div class="line">      default: 'confirm',</div><div class="line">      validator(value) &#123;</div><div class="line">        return value === 'confirm' || value === 'inform';</div><div class="line">      &#125;,</div><div class="line">    &#125;,</div><div class="line">    sureBtn: &#123;</div><div class="line">      type: Function,</div><div class="line">    &#125;,</div><div class="line">    cancelBtn: &#123;</div><div class="line">      type: Function,</div><div class="line">    &#125;,</div><div class="line">    context: &#123;</div><div class="line">      type: Object,</div><div class="line">    &#125;,</div><div class="line">  &#125;,</div><div class="line">  methods: &#123;</div><div class="line">    cancel() &#123;</div><div class="line">      if (this.cancelBtn) &#123;</div><div class="line">        this.cancelBtn.apply(this.context);</div><div class="line">      &#125;</div><div class="line">      this.close();</div><div class="line">    &#125;,</div><div class="line">    sure() &#123;</div><div class="line">      if (this.sureBtn) &#123;</div><div class="line">        this.sureBtn.apply(this.context);</div><div class="line">      &#125;</div><div class="line">      this.close();</div><div class="line">    &#125;,</div><div class="line">    show() &#123;</div><div class="line">      this.showAlert = true;</div><div class="line">    &#125;,</div><div class="line">    close() &#123;</div><div class="line">      this.showAlert = false;</div><div class="line">    &#125;,</div><div class="line">  &#125;,</div><div class="line">&#125;;</div><div class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!-- Add "scoped" attribute to limit CSS to this component only --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">scoped</span> <span class="attr">lang</span>=<span class="string">'scss'</span>&gt;</span><span class="undefined"></span></div><div class="line">.alert &#123;</div><div class="line">  position: fixed;</div><div class="line">  top: 0;</div><div class="line">  left: 0;</div><div class="line">  right: 0;</div><div class="line">  bottom: 0;</div><div class="line">  background: rgba(0,0,0, 0.8);</div><div class="line">  z-index: 1000;</div><div class="line">  transition: all .3s ease-in-out;</div><div class="line">&#125;</div><div class="line">.wrap &#123;</div><div class="line">  position: absolute;</div><div class="line">  z-index: 1002;</div><div class="line">  min-width: 400px;</div><div class="line">  background: #fff;</div><div class="line">  left: 50%;</div><div class="line">  top: 50%;</div><div class="line">  transform: translate(-50%, -50%);</div><div class="line">  border-radius: 4px;</div><div class="line">&#125;</div><div class="line">.head &#123;</div><div class="line">  height: 40px;</div><div class="line">  line-height: 40px;</div><div class="line">  border-bottom: 1px solid #dedede;</div><div class="line">  padding-left: 10px;</div><div class="line">  color: #333;</div><div class="line">&#125;</div><div class="line">.body &#123;</div><div class="line">  padding: 40px 20px;</div><div class="line">  text-align: center;</div><div class="line">&#125;</div><div class="line">.foot &#123;</div><div class="line">  height: 50px;</div><div class="line">  text-align: center;</div><div class="line">  button &#123;</div><div class="line">    margin-right: 20px;</div><div class="line">    &amp;:last-child &#123;</div><div class="line">      margin-right: 0;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>这里只是写了简单的功能，并没有考虑更复杂的情况，比如按钮颜色定制，大小定制，<code>z-index</code>层级的考虑，遮罩层的统一管理等等，只是为了掌握编写弹出框的主要思想，所以没有写太多的情况。这里只细分了是确认框还是通知框，可以定制弹出框的内容、标题等一些简单的常规操作。</p>
+<p>其实这个组件写好，就可以在页面用起来了，直接在对应页面插入这段，可以也可以用：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!--template--&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">button</span> @<span class="attr">click</span>=<span class="string">"showAlert"</span>&gt;</span>点我<span class="tag">&lt;/<span class="name">button</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">alert</span> <span class="attr">ref</span>=<span class="string">"alert"</span>&gt;</span>我是一个确认框<span class="tag">&lt;/<span class="name">alert</span>&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!--javascript--&gt;</span></div><div class="line">...</div><div class="line">methods: &#123;</div><div class="line">    showAlert() &#123;</div><div class="line">        this.$refs.alert.show();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">...</div></pre></td></tr></table></figure>
+<p>当然，如果真要这么用，这个组件还是需要修改一些东西的，比如事件抛出，当点击确定或者取消按钮的时候，需要<code>emit</code>对应的事件，以提供给父组件捕获，并做相应的处理。</p>
+<h1 id="动态插入到页面中"><a href="#动态插入到页面中" class="headerlink" title="动态插入到页面中"></a>动态插入到页面中</h1><p>为了能让组件动态的插入到页面中，需要对上面的组件进行封装，利用<code>Vue.extend</code>机制，可以轻松的做到这种封装，直接上代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">'vue'</span>;</div><div class="line"></div><div class="line"><span class="keyword">import</span> alert <span class="keyword">from</span> <span class="string">'./alert'</span>;</div><div class="line"></div><div class="line"><span class="keyword">const</span> AlertConstructor = Vue.extend(alert);</div><div class="line"></div><div class="line"><span class="keyword">const</span> div = <span class="built_in">document</span>.createElement(<span class="string">'div'</span>);</div><div class="line"></div><div class="line">AlertConstructor.show = <span class="function">(<span class="params">options</span>) =&gt;</span> &#123;</div><div class="line">  <span class="built_in">document</span>.body.appendChild(div);</div><div class="line">  options.type = <span class="string">'inform'</span>;</div><div class="line">  <span class="keyword">const</span> propsData = <span class="built_in">Object</span>.assign(&#123;&#125;, options);</div><div class="line">  <span class="keyword">const</span> alertInstance = <span class="keyword">new</span> AlertConstructor(&#123;</div><div class="line">    propsData,</div><div class="line">  &#125;).$mount(div);</div><div class="line">  alertInstance.show();</div><div class="line">&#125;;</div><div class="line">AlertConstructor.confirm = <span class="function">(<span class="params">options</span>) =&gt;</span> &#123;</div><div class="line">  <span class="built_in">document</span>.body.appendChild(div);</div><div class="line">  options.type = <span class="string">'confirm'</span>;</div><div class="line">  <span class="keyword">const</span> propsData = <span class="built_in">Object</span>.assign(&#123;&#125;, options);</div><div class="line">  <span class="keyword">const</span> alertInstance = <span class="keyword">new</span> AlertConstructor(&#123;</div><div class="line">    propsData,</div><div class="line">  &#125;).$mount(div);</div><div class="line">  alertInstance.show();</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">export</span> <span class="keyword">default</span> AlertConstructor;</div></pre></td></tr></table></figure>
+<p>这里，show对应的是通知框，confirm对应的是确认框。我知道这种封装有点简单了，有很多情况没有考虑，比如有多个弹出框时的处理等。这里只是做了简单的封装，为的就是让大家明白此种封装主要思路是什么。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>这篇文章仅仅是对自己这几天摸索弹出框组件问题的一个简短的总结与思考。可能还不是很成熟，当做抛砖引玉吧，欢迎大家多多提意见。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/javascript-vue-弹出框组件/" rel="tag"># javascript vue 弹出框组件</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/06/javascript对象详解：搞清楚原型与原型链/" rel="next" title="javascript对象详解：__proto__和prototype的区别和联系">
+                <i class="fa fa-chevron-left"></i> javascript对象详解：__proto__和prototype的区别和联系
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/07/03/用vue编写弹出框组件/"
+           data-title="用vue编写弹出框组件" data-url="http://yoursite.com/2017/07/03/用vue编写弹出框组件/">
+      </div>
+    
+    <div id="container"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+var gitment = new Gitment({
+  owner: 'mengera88',
+  repo: 'mengera88.github.io',
+  oauth: {
+    client_id: 'd7cbe4a57bd21cf9e226',
+    client_secret: 'c500a92c31b1f17fc147b0e191448accdf310ece',
+  },
+})
+gitment.render('comments')
+</script>
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Jessica" />
+          <p class="site-author-name" itemprop="name">Jessica</p>
+          <p class="site-description motion-element" itemprop="description">前端 node JavaScript 学习 技术杂谈</p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#设计组件的思考"><span class="nav-number">2.</span> <span class="nav-text">设计组件的思考</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#alert组件设计"><span class="nav-number">3.</span> <span class="nav-text">alert组件设计</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#动态插入到页面中"><span class="nav-number">4.</span> <span class="nav-text">动态插入到页面中</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jessica</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+</br>
+<span id="busuanzi_container_site_pv">
+  Total <span id="busuanzi_value_site_pv"></span> views.
+  您是jessica的第<span id="busuanzi_value_site_uv"></span>个小伙伴
+  <span id="busuanzi_value_page_pv"></span> Hits
+</span>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"mengera88"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
