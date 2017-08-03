@@ -1,0 +1,741 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="mvvm javascript 框架," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言最后一篇文章，我们编写了一个app来显示学生信息并将其重构为MVVM风格。
+我没有说，但也许你已经注意到，我们在上一篇中已经做了一些看起来像MVVM框架的结尾。如果你忘记了上一篇文章或者你跳过了，别担心，这里是代码（并且我加了一些注释）：
+1234567891011121314151617181920/*** @param &amp;#123;Node&amp;#125; root* @param &amp;#123">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从零开始编写一个MVVM框架（三）（译）">
+<meta property="og:url" content="http://yoursite.com/2017/07/31/从零开始编写一个MVVM框架（三）（译）/index.html">
+<meta property="og:site_name" content="前端静径">
+<meta property="og:description" content="前言最后一篇文章，我们编写了一个app来显示学生信息并将其重构为MVVM风格。
+我没有说，但也许你已经注意到，我们在上一篇中已经做了一些看起来像MVVM框架的结尾。如果你忘记了上一篇文章或者你跳过了，别担心，这里是代码（并且我加了一些注释）：
+1234567891011121314151617181920/*** @param &amp;#123;Node&amp;#125; root* @param &amp;#123">
+<meta property="og:image" content="http://yoursite.com/images/framework_workflow.png">
+<meta property="og:updated_time" content="2017-08-03T03:03:19.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="从零开始编写一个MVVM框架（三）（译）">
+<meta name="twitter:description" content="前言最后一篇文章，我们编写了一个app来显示学生信息并将其重构为MVVM风格。
+我没有说，但也许你已经注意到，我们在上一篇中已经做了一些看起来像MVVM框架的结尾。如果你忘记了上一篇文章或者你跳过了，别担心，这里是代码（并且我加了一些注释）：
+1234567891011121314151617181920/*** @param &amp;#123;Node&amp;#125; root* @param &amp;#123">
+<meta name="twitter:image" content="http://yoursite.com/images/framework_workflow.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/07/31/从零开始编写一个MVVM框架（三）（译）/"/>
+
+
+
+
+
+  <title> 从零开始编写一个MVVM框架（三）（译） | 前端静径 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">前端静径</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle">前端成长足迹</p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/31/从零开始编写一个MVVM框架（三）（译）/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Jessica">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.gif">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="前端静径">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="前端静径" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                从零开始编写一个MVVM框架（三）（译）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-31T17:35:58+08:00">
+                2017-07-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/07/31/从零开始编写一个MVVM框架（三）（译）/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/07/31/从零开始编写一个MVVM框架（三）（译）/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最后一篇文章，我们编写了一个app来显示学生信息并将其重构为MVVM风格。</p>
+<p>我没有说，但也许你已经注意到，我们在上一篇中已经做了一些看起来像MVVM框架的结尾。如果你忘记了上一篇文章或者你跳过了，别担心，这里是代码（并且我加了一些注释）：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line">* @param &#123;Node&#125; root</div><div class="line">* @param &#123;Object&#125; model</div><div class="line">* @param &#123;Function&#125; view</div><div class="line">* @param &#123;Function&#125; vm</div><div class="line">*/</div><div class="line"><span class="keyword">const</span> run = <span class="function"><span class="keyword">function</span> (<span class="params">root, &#123;model, view, vm&#125;</span>) </span>&#123;</div><div class="line">  <span class="keyword">let</span> m = &#123;...model&#125;</div><div class="line">  <span class="keyword">let</span> m_old = &#123;&#125;</div><div class="line"></div><div class="line">  setInterval( <span class="function"><span class="keyword">function</span> (<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="keyword">if</span>(!_.isEqual(m, m_old))&#123;</div><div class="line">      <span class="keyword">const</span> rendered = view(vm(m))</div><div class="line">      root.innerHTML = <span class="string">''</span></div><div class="line">      root.appendChild(rendered)</div><div class="line"></div><div class="line">      m_old = &#123;...m&#125;</div><div class="line">    &#125;</div><div class="line">  &#125;,<span class="number">1000</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Hey,你在开玩笑？一个十行的框架？</p>
+<p><strong>框架是对如何组织代码和整个项目如何通用运作的抽象。</strong></p>
+<p>这并不意味着你应该有一堆代码或混乱的类，尽管企业可用的API列表经常都很可怕的长。但是如果你看一个框架仓库的核心文件夹，你将可能会发现它会出乎意料的小（相比于整个项目来说）。其核心代码包含主要工作进程，而其他部分，也许我们可以称他们为外设，帮助开发人员以更加舒适的方式构建应用程序。一个框架究竟会有多小的一个例子是<a href="https://cycle.js.org/" target="_blank" rel="external">cycle.js</a>,只有124行（包含注释和空格）。我强烈的建议你去看看Andre André Staltz的描述Cycle.js的<a href="https://egghead.io/series/cycle-js-fundamentals" target="_blank" rel="external">视频</a>。视频展示了一个框架如何设计的整体过程。</p>
+<h1 id="抽象你的框架"><a href="#抽象你的框架" class="headerlink" title="抽象你的框架"></a>抽象你的框架</h1><h2 id="通用性捕获"><a href="#通用性捕获" class="headerlink" title="通用性捕获"></a>通用性捕获</h2><p>我们说一个框架提供了整个程序如何工作的通用过程。这种描述是不明确的，没有任何意义。如果我知道我的程序中什么是通用的，编程就会编程至少十倍的简单。框架是暗示开发人员可能是通用的，易于重用的东西。他们为某些特定类别的问题提供了不太糟糕的模板，这就是为什么我非常尊重那些建立广泛使用框架的人。他们解决了难得部分，而留给我们简单的方法。</p>
+<p>那么我们的学生信息app怎么样呢？我们将其重构为mvvm风格，那么什么是通用的部分呢？幸运的是，我们已经知道了mvvm和它怎么工作的：</p>
+<p><img src="/images/framework_workflow.png" alt="alt mvvm work way"></p>
+<p>我们的app主要由四部分组成，框架应该把他们结合在一起。这定义了接口和维护数据流。它就DIY一个个人电脑。你有CPU、内存、硬盘和其他组成部分，并且你有主板和一些插槽。你的自定义代码就像这些组件，而框架就是主板。你只需要关心组件是否需要接口。至于他们如何组合在一起，谁在乎？主板会做的。从图中可以看出，我们的框架将形成一个数据流圈：</p>
+<ol>
+<li>数据通过适配器从<code>Model</code>层开始，最后在<code>View</code>层展示</li>
+<li>用户交互从<code>View</code>开始，通过行为（<code>actions</code>）最终改变<code>Model</code></li>
+<li>然后数据从修改过的<code>Model</code>开始，重复第一步。</li>
+</ol>
+<p>实际上，框架因工作原理而异。它们在接口上共享一些功能，而不是如何实现他们。</p>
+<h2 id="细节：为View选择工具"><a href="#细节：为View选择工具" class="headerlink" title="细节：为View选择工具"></a>细节：为View选择工具</h2><p>这一节，我们将看到制作一个框架的一些细节。这里可能会有很多问题，但我们将重点关注我认为重要的几点。</p>
+<p><strong>我们将做出的折中主要是基于我自己的经验，可能不适合读者。我不是在说服你。这只是我的只是加上我的个人评价的一个技术展示。</strong></p>
+<p>首当其冲的难题就是<code>View</code>的接口。这个问题影响开发人员的用户体验。如果一个UI框架无法提供UI创建的良好体验，那真是令人沮丧的。</p>
+<p>Web开发中的创建<code>View</code>使用最广泛的技术是使用模板DSL。很多著名的解决方案都采用了它，如<code>Angular</code>和<code>React</code>。在SPA受欢迎之前，模板已经被广泛使用了。我们知道的最好的语言：PHP，它刚开始就是为了从服务器端的模板生成<code>html</code>而设计的。</p>
+<p>模板主要由高可读性和可重用性而闻名。为了理解它，我们来回顾下之前文章中的代码。花十秒的时间来理解下面的代码片段：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> createList = <span class="function"><span class="keyword">function</span>(<span class="params">kvPairs</span>)</span>&#123;</div><div class="line">  <span class="keyword">const</span> createListItem = <span class="function"><span class="keyword">function</span> (<span class="params">label, content</span>) </span>&#123;</div><div class="line">    <span class="keyword">const</span> labelSpan = <span class="built_in">document</span>.createElement(<span class="string">'span'</span>)</div><div class="line">    labelSpan.textContent = label</div><div class="line"></div><div class="line">    <span class="keyword">const</span> contentSpan = <span class="built_in">document</span>.createElement(<span class="string">'span'</span>)</div><div class="line">    contentSpan.textContent = content</div><div class="line"></div><div class="line">    <span class="keyword">const</span> li = <span class="built_in">document</span>.createElement(<span class="string">'li'</span>)</div><div class="line">    li.appendChild(labelSpan)</div><div class="line">    li.appendChild(contentSpan)</div><div class="line"></div><div class="line">    <span class="keyword">return</span> li</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">const</span> root = <span class="built_in">document</span>.createElement(<span class="string">'ul'</span>)</div><div class="line">  kvPairs.forEach(<span class="function"><span class="keyword">function</span> (<span class="params">x</span>) </span>&#123;</div><div class="line">    root.appendChild(createListItem(x.key, x.value))</div><div class="line">  &#125;)</div><div class="line">  <span class="keyword">return</span> root</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>现在时间到了，我敢打赌大部分人都会感到困惑。虽然它的代码风格并不差，但这并不是你或我的错。用<code>JavaScript DOM API</code>描述<code>HTML</code>片段有点…额…不太直接。我们首先阅读代码，然后在我们的大脑中人为的编译并运行以获取<code>HTML</code>代码。之后，我们要人为的编译<code>HTML</code>代码到网页中，以了解它实际将会生成什么。但是用模板，我们只要一步人为编译：<code>HTML -&gt; 网页</code>。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&lt;ul&gt;</div><div class="line">  @foreach(var x in kvPairs)</div><div class="line">  &#123;</div><div class="line">     &lt;li&gt;</div><div class="line">       &lt;span&gt;@x.key&lt;/span&gt;</div><div class="line">       &lt;span&gt;@x.value&lt;/span&gt;</div><div class="line">     &lt;/li&gt;</div><div class="line">  &#125;</div><div class="line">&lt;/ul&gt;</div></pre></td></tr></table></figure>
+<p>很明显，大部分人都可以在几秒钟内了解它。你甚至不需要知道我在使用什么语言（Razor for ASP.NET）。模板对于用户来说是非常酷的，但是对框架开发人员来说不是那么酷。使用模板DSL通常意味着你需要使用模板引擎运送你的框架。在大多数情况下，模板引擎将带来可承受但可怕的空格。例如，著名的模板<code>DSL</code>，<code>jade.js</code>,其最小格式多用了46kb大小。</p>
+<p>框架专用模板引擎或编译器要小得多，但是它需要额外的精力去维护编译器。毕竟，我认为模板是最好的解决方案。但是我们不会在我们这个小型框架中使用它。我想要一些更加容易实现的，而可读性仍然可以接受的东西。</p>
+<p>如果你听说过<a href="http://elm-lang.org/" target="_blank" rel="external">Elm.js</a>，你可能已经注意到了它创建DOM视图的特殊方式：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">main =</div><div class="line">  span [class "welcome-message"] [text "Hello, World!"]</div></pre></td></tr></table></figure>
+<p>以上展示了用<code>Elm</code>如何创建一个<code>Hello World</code>页面。<code>Elm</code>借鉴了<code>Haskell</code>的大部分语言规范。如果你不知道<code>Haskell</code>，没关系，我将把它转换成<code>JavaScript</code>:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">const main = function () &#123;</div><div class="line">  const attrs = [class('welcome-message')]</div><div class="line">  //class is a function return a Node attribute of class name</div><div class="line">  const children = [text('Hello World!')]</div><div class="line">  //text is a function returns a text Node</div><div class="line"></div><div class="line">  return span(attrs, children)</div><div class="line">  //span is a function returns a span Node</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>它看上去有点点混乱，但是比原来版本的<code>Document.createElement</code>等起来好得多，而且实现起来容易的多。<code>span</code>, <code>class</code>, <code>text</code>都是<code>JS</code>函数，你不需要知道编译器或解析器或者类似的东西。</p>
+<p>这是个可以妥协接受的方案（可能不适合你）。</p>
+<p>所以我将要介绍<a href="https://github.com/dominictarr/hyperscript" target="_blank" rel="external">HyperScript</a>和<a href="https://github.com/ohanhi/hyperscript-helpers" target="_blank" rel="external">helper</a>库，使用这些库，我们可以用下面的方法很轻松的创建列表视图:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> createList = <span class="function"><span class="keyword">function</span> (<span class="params">kvPairs</span>) </span>&#123;</div><div class="line">  <span class="keyword">const</span> listItem = <span class="function"><span class="keyword">function</span> (<span class="params">&#123;key, value</span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> li(&#123;&#125;, </div><div class="line">              [span(&#123;&#125;,[text(x.key)]), </div><div class="line">               span(&#123;&#125;,[text(x.value)])</div><div class="line">              ])</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">return</span> ul(&#123;&#125;, kvPairs.map(listItem))</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>虽然<code>HyperScript</code>提供了很API，但我们可以简单地使用两个规则：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line">* @param &#123;String&#125; selector - The query String like '.class', '#id'</div><div class="line">* @param &#123;Object&#125; attributes - The Node Attributes dict</div><div class="line">* @param &#123;Array&#125; children - The list of children nodes.</div><div class="line">*/</div><div class="line">TagName(selector, attributs, children)</div><div class="line">TagName(attributes, children)</div></pre></td></tr></table></figure>
+<h2 id="细节：如何重绘"><a href="#细节：如何重绘" class="headerlink" title="细节：如何重绘"></a>细节：如何重绘</h2><p>使用<code>HyperScript</code>的另一个原因是它提供更好的重绘支持。最早用于更新网页的解决方案是刷新。那时，重绘意味着从服务器上再获取一次数据。然后<code>Ajax</code>到来了，使用它，我们可以控制页面的哪个部分应该被重绘。但是，管理DOM整个复杂的DOM树并不容易。开发商必须在运行效率和开发效率之间取得平衡。</p>
+<p>拿我们的学生信息app作为例子。我们每当数据改变的时候就重绘整个树，很显然，这是没有必要的：无论模型如何变化，列表视图和label spans的结构都是保持不变的。对于一个hello-world级别的演示，你怎么做影响很小。但对于工业级别项目而言，性能是很重要的。数据web框架已经试图解决这个问题很多年了，通过解析模板并收集依赖关系，许多框架都能够精确的控制每个节点。在网络开发人员的先驱们所做的一切努力中。 Facebook引入的虚拟DOM是最广泛接受的解决方案。虚拟DOM背后的想法并不是新的。Java开发人员已经使用缓冲区来建立字符串数十年了。使用虚拟DOM：</p>
+<ol>
+<li>我们在虚拟DOM中编辑，在“真实”树中不会有任何事情发生。</li>
+<li>我们结束编辑后，与旧版本的虚拟DOM树做比较</li>
+<li>修补差异</li>
+<li>虚拟DOM在我们的补丁上做一些优化，并更新“真实”树;</li>
+</ol>
+<p>所以无论我们编辑虚拟树多少次，我们只更新真实树一次。这相比<code>$(selector).attr(name, value)</code>节约了很多性能。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> render = <span class="function"><span class="keyword">function</span> (<span class="params">root, left, right</span>) </span>&#123;</div><div class="line">  patch(root, diff(left, right))</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上面的例子是hello-world级别的虚拟DOM API的例子，但是它对我们的小型框架够用了。</p>
+<h2 id="细节：什么时候重绘"><a href="#细节：什么时候重绘" class="headerlink" title="细节：什么时候重绘"></a>细节：什么时候重绘</h2><p>换句话说，我怎么知道我需要重绘了呢？</p>
+<p>在早起研究中，我们使用轮询。轮询容易实施，其性能对于我们的学生信息App来说也可以接受。每秒一个轮询可以适用于现在CPU，但是如果你想要视图更新的更频繁，或者你需要支持一些非常老的机器，在浏览器里面轮询可能不是一个好主意。幸运的是，OOP的先驱们面临同样的问题：</p>
+<blockquote>
+<p>如何通知系统的一部分，另一部分的状态已经改变了？</p>
+</blockquote>
+<p>时，已经发明了一些同等的技术。我们经常使用观察者模式，每个前端开发人员即使从未听过它，也都用过它。是的，当你编写<code>node.addEventListener(myFunc)</code>时，你正在享受观察者模式的便利。而你每天都遭受的回调噩梦，也可以被看作是一种特殊的观察者模式。观察者的核心思想是将“WHEN”和“WHAT”分开。被观察者知道一些东西“什么时候”发生，而观察者（或者订阅者）知道“什么”会发生。谈论概念很容易，让我们来看看代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> observable = &#123;</div><div class="line">  <span class="attr">_observers</span>: [],</div><div class="line">  <span class="attr">notify</span>: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">this</span>._observers.forEach(<span class="function"><span class="keyword">function</span>(<span class="params">wather</span>)</span>&#123;</div><div class="line">      watcher.onNotify()</div><div class="line">    &#125;)</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">let</span> observer = &#123;</div><div class="line">  <span class="attr">onNotify</span>: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;<span class="comment">/*custom code*/</span>&#125;</div><div class="line">&#125; </div><div class="line"></div><div class="line"><span class="keyword">const</span> observe = <span class="function"><span class="keyword">function</span>(<span class="params">observer, observable</span>) </span>&#123;</div><div class="line">  <span class="keyword">if</span>(!observable._observers.contains(observer))&#123;</div><div class="line">    observable._observers.push(observer)</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>一旦将观察者添加到<code>observable</code>的订阅列表中，当<code>observable</code>通知更改时，将立即调用<code>onNotify()</code>方法。正如你所看到的，除了调用函数不是硬编码，这与直接的函数调用没有区别。如果Model是可观察的，我们可以观察它并更新改变，这正是大多数框架如何处理的。<code>Knockout.js</code>是第一代MVVM工具包之一，要使用<code>Knockout</code>,你需要使你的数据成为一个<code>Knockout</code>可观察的：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> model = <span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</div><div class="line">  <span class="keyword">this</span>.firstName = ko.obersevable(data.firstName)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>很多人可能会认为手动进行封装是可怕重复的工作，所以他们使用es5的<code>Object.defineProperty</code>API来hack Model。让我们来看怎么去做：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> notifyPropertyChange = <span class="function"><span class="keyword">function</span> (<span class="params">prop</span>) </span>&#123;</div><div class="line">  <span class="comment">/*your notifying logic here*/</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> hack = <span class="function"><span class="keyword">function</span>(<span class="params">obj</span>) </span>&#123;</div><div class="line">  <span class="keyword">const</span> keys = <span class="built_in">Object</span>.keys(obj).filter(obj.hasOwnProperty)</div><div class="line">  keys.forEach(fucntion(key) &#123;</div><div class="line">    <span class="keyword">let</span> value = obj[key]</div><div class="line">    <span class="built_in">Object</span>.defineProperty(obj, key, &#123;</div><div class="line">      <span class="attr">set</span>: <span class="function"><span class="keyword">function</span>(<span class="params">newVal</span>) </span>&#123;</div><div class="line">        value = newVal</div><div class="line">        notifyPropertyChange(key)</div><div class="line">      &#125;,</div><div class="line">      <span class="attr">get</span>: <span class="function"><span class="params">()</span> =&gt;</span> value,</div><div class="line">      <span class="attr">writable</span>: <span class="literal">true</span>,</div><div class="line">      <span class="attr">configurable</span>: <span class="literal">true</span></div><div class="line">    &#125;)</div><div class="line">  &#125;)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>Vue.js</code>使用此技术精简了观察过程，当创建一个Vue组件时，框架将自动hack <code>data</code>和<code>computed</code>字段。而<code>Cycle.js</code>更激进，<code>Cycle</code>的观察系统完全基于<code>Rx.js</code>。让我们来看一些例子：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> Cycle <span class="keyword">from</span> <span class="string">'@cycle/core'</span>;</div><div class="line"><span class="keyword">import</span> &#123;div, label, input, hr, h1, makeDOMDriver&#125; <span class="keyword">from</span> <span class="string">'@cycle/dom'</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">main</span>(<span class="params">sources</span>) </span>&#123;</div><div class="line">  <span class="keyword">const</span> sinks = &#123;</div><div class="line">    <span class="attr">DOM</span>: sources.DOM.select(<span class="string">'.field'</span>).events(<span class="string">'input'</span>)</div><div class="line">      .map(<span class="function"><span class="params">ev</span> =&gt;</span> ev.target.value)</div><div class="line">      .startWith(<span class="string">''</span>)</div><div class="line">      .map(<span class="function"><span class="params">name</span> =&gt;</span></div><div class="line">        div([</div><div class="line">          label(<span class="string">'Name:'</span>),</div><div class="line">          input(<span class="string">'.field'</span>, &#123;<span class="attr">attributes</span>: &#123;<span class="attr">type</span>: <span class="string">'text'</span>&#125;&#125;),</div><div class="line">          hr(),</div><div class="line">          h1(<span class="string">'Hello '</span> + name),</div><div class="line">        ])</div><div class="line">      )</div><div class="line">  &#125;;</div><div class="line">  <span class="keyword">return</span> sinks;</div><div class="line">&#125;</div><div class="line"></div><div class="line">Cycle.run(main, &#123; <span class="attr">DOM</span>: makeDOMDriver(<span class="string">'#app-container'</span>) &#125;);</div></pre></td></tr></table></figure>
+<p>我从Cycle的<a href="http://cycle.js.org/" target="_blank" rel="external">主页</a>拷贝了这段例子，你可以看到它与我们熟悉的框架有很大的不同，Cycle背后的哲学是非常有趣的，如果你访问他们的官网，你会了解到更多。对于我来说，让我们的小型框架变小，我会选择手工方式（这也是.NET WPF中使用的最早的解决方案）。它很容易实现，并为用户留下了更多的控制权。其代价是更多的样板代码。</p>
+<h2 id="最后的工作"><a href="#最后的工作" class="headerlink" title="最后的工作"></a>最后的工作</h2><p>让我们来看我们的框架会是什么样，它比我刚开始想的要更加简单：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> &#123;h, patch, diff, create&#125; <span class="keyword">from</span> <span class="string">'virtual-dom'</span></div><div class="line"></div><div class="line"><span class="keyword">const</span> render = <span class="function"><span class="keyword">function</span> (<span class="params">root, left, right</span>) </span>&#123;</div><div class="line">  patch(root, diff(left, right))</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line">* @param &#123;Object&#125; model</div><div class="line">* @param &#123;Function&#125; view - takes one param, viewmodel</div><div class="line">* @param &#123;Function&#125; viewModel - takes two params, model and notify</div><div class="line">*/</div><div class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="function"><span class="keyword">function</span> <span class="title">run</span> (<span class="params">rootSelector, &#123;model, view, viewModel&#125;</span>) </span>&#123;</div><div class="line">  <span class="keyword">let</span> left = h(<span class="string">'div'</span>)</div><div class="line">  <span class="keyword">let</span> right</div><div class="line">  <span class="keyword">let</span> root = create(left)</div><div class="line"></div><div class="line">  <span class="keyword">const</span> notify = <span class="function"><span class="keyword">function</span> <span class="title">notify</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    left = right</div><div class="line">    right = view(viewModel(model, notify))</div><div class="line">    render(root, left, right)</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="built_in">document</span>.querySelector(rootSelector).appendChild(root)</div><div class="line"></div><div class="line">  right = view(viewModel(model, notify))</div><div class="line">  render(root, left, right)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>加上注释，一共27行，很惊奇，是么？并且我写了一个小型的hello world的demo，它看上去很像你在<code>Angular.js</code><a href="https://angularjs.org/#the-basics" target="_blank" rel="external">官网主页</a>上看到的那个。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> helper <span class="keyword">from</span> <span class="string">'hyperscript-helpers'</span></div><div class="line"><span class="keyword">import</span> &#123;h&#125; <span class="keyword">from</span> <span class="string">'virtual-dom'</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> run <span class="keyword">from</span> <span class="string">'../src/index'</span></div><div class="line"></div><div class="line"><span class="keyword">const</span> &#123;div, label, input, hr, h1&#125; = helper(h)</div><div class="line"></div><div class="line"><span class="keyword">let</span> model = &#123;</div><div class="line">  <span class="attr">tpml</span>: <span class="function">(<span class="params">x</span>) =&gt;</span> <span class="string">`hello <span class="subst">$&#123;x&#125;</span> !`</span>,</div><div class="line">  <span class="attr">name</span>: <span class="string">''</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> viewModel = <span class="function"><span class="keyword">function</span> (<span class="params">model, notify</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> &#123;</div><div class="line">    <span class="attr">msg</span>: model.tpml(model.name),</div><div class="line">    <span class="attr">name</span>: model.name,</div><div class="line">    <span class="attr">oninput</span>: <span class="function"><span class="keyword">function</span> (<span class="params">ev</span>) </span>&#123;</div><div class="line">      model.name = ev.target.value</div><div class="line">      notify()</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> view = <span class="function"><span class="keyword">function</span> (<span class="params">vm</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> div(&#123;&#125;,</div><div class="line">             [label(&#123;<span class="attr">textContent</span>: <span class="string">'Name: '</span>&#125;, []),</div><div class="line">              input(&#123;<span class="attr">type</span>: <span class="string">'text'</span>, <span class="attr">value</span>: vm.name, <span class="attr">oninput</span>: vm.oninput&#125;, []),</div><div class="line">              hr(&#123;&#125;, []),</div><div class="line">              h1(&#123;<span class="attr">textContent</span>: vm.msg&#125;, [])</div><div class="line">             ])</div><div class="line">&#125;</div><div class="line"></div><div class="line">run(<span class="string">'#app'</span>, &#123;model, view, viewModel&#125;)</div></pre></td></tr></table></figure>
+<p>你可以在<a href="https://github.com/Twiknight/mvvm-toy" target="_blank" rel="external">这里</a>下载源码和示例。尽情的玩吧。</p>
+<h2 id="一些话"><a href="#一些话" class="headerlink" title="一些话"></a>一些话</h2><p>你可能对我的实现感到一定不舒服，尤其是你可能不喜欢<code>notify()</code>函数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> notify = <span class="function"><span class="keyword">function</span> <span class="title">notify</span> (<span class="params"></span>) </span>&#123;</div><div class="line">  left = right</div><div class="line">  right = view(viewModel(model, notify))</div><div class="line">  render(root, left, right)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>实际上，在这里递归是不必要的，你可以使用代理：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//Pseudo code</span></div><div class="line"><span class="keyword">const</span> proxy = &#123;</div><div class="line">  <span class="attr">notify</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">this</span>.renderers.forEach(<span class="function"><span class="params">func</span> =&gt;</span> func())</div><div class="line">  &#125;,</div><div class="line">  <span class="attr">renderers</span>: []</div><div class="line">&#125;</div><div class="line"></div><div class="line">proxy.renderers.push(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">  left = right</div><div class="line">  right = view(viewModel(model,proxy.notify)</div><div class="line">  render(root, left, right)</div><div class="line">&#125;)</div><div class="line"></div><div class="line">proxy.notify()</div></pre></td></tr></table></figure>
+<p>这一切都是关于个人喜好的。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/mvvm-javascript-框架/" rel="tag"># mvvm javascript 框架</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/28/从零开始编写一个MVVM框架（二）（译）/" rel="next" title="从零开始编写一个MVVM框架（二）（译）">
+                <i class="fa fa-chevron-left"></i> 从零开始编写一个MVVM框架（二）（译）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/07/31/从零开始编写一个MVVM框架（三）（译）/"
+           data-title="从零开始编写一个MVVM框架（三）（译）" data-url="http://yoursite.com/2017/07/31/从零开始编写一个MVVM框架（三）（译）/">
+      </div>
+    
+    <div id="container"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+var gitment = new Gitment({
+  owner: 'mengera88',
+  repo: 'mengera88.github.io',
+  oauth: {
+    client_id: 'd7cbe4a57bd21cf9e226',
+    client_secret: 'c500a92c31b1f17fc147b0e191448accdf310ece',
+  },
+})
+gitment.render('comments')
+</script>
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Jessica" />
+          <p class="site-author-name" itemprop="name">Jessica</p>
+          <p class="site-description motion-element" itemprop="description">前端 node JavaScript 学习 技术杂谈</p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#抽象你的框架"><span class="nav-number">2.</span> <span class="nav-text">抽象你的框架</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#通用性捕获"><span class="nav-number">2.1.</span> <span class="nav-text">通用性捕获</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#细节：为View选择工具"><span class="nav-number">2.2.</span> <span class="nav-text">细节：为View选择工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#细节：如何重绘"><span class="nav-number">2.3.</span> <span class="nav-text">细节：如何重绘</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#细节：什么时候重绘"><span class="nav-number">2.4.</span> <span class="nav-text">细节：什么时候重绘</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最后的工作"><span class="nav-number">2.5.</span> <span class="nav-text">最后的工作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一些话"><span class="nav-number">2.6.</span> <span class="nav-text">一些话</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jessica</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+</br>
+<span id="busuanzi_container_site_pv">
+  Total <span id="busuanzi_value_site_pv"></span> views.
+  您是jessica的第<span id="busuanzi_value_site_uv"></span>个小伙伴
+  <span id="busuanzi_value_page_pv"></span> Hits
+</span>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"mengera88"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
