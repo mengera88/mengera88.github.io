@@ -1,0 +1,718 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="javascript mvvm 前端 框架," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言mvvm模式相信做前端的人都不陌生，去网上搜mvvm，会出现一大堆关于mvvm模式的博文，但是这些博文大多都只是用图片和文字来进行抽象的概念讲解，对于刚接触mvvm模式的新手来说，这些概念虽然能够读懂，但是也很难做到理解透彻。因此，我写了这篇文章。
+这篇文章旨在通过代码的形式让大家更好的理解mvvm模式，相信大多数人读了这篇文章之后再去看其他诸如regular、vue等基于mvvm模式框架的源">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从零开始编写一个精简mvvm框架">
+<meta property="og:url" content="http://yoursite.com/2017/09/14/从零开始编写一个精简mvvm框架/index.html">
+<meta property="og:site_name" content="前端静径">
+<meta property="og:description" content="前言mvvm模式相信做前端的人都不陌生，去网上搜mvvm，会出现一大堆关于mvvm模式的博文，但是这些博文大多都只是用图片和文字来进行抽象的概念讲解，对于刚接触mvvm模式的新手来说，这些概念虽然能够读懂，但是也很难做到理解透彻。因此，我写了这篇文章。
+这篇文章旨在通过代码的形式让大家更好的理解mvvm模式，相信大多数人读了这篇文章之后再去看其他诸如regular、vue等基于mvvm模式框架的源">
+<meta property="og:image" content="http://yoursite.com/images/mvvm.png">
+<meta property="og:updated_time" content="2017-09-15T03:20:39.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="从零开始编写一个精简mvvm框架">
+<meta name="twitter:description" content="前言mvvm模式相信做前端的人都不陌生，去网上搜mvvm，会出现一大堆关于mvvm模式的博文，但是这些博文大多都只是用图片和文字来进行抽象的概念讲解，对于刚接触mvvm模式的新手来说，这些概念虽然能够读懂，但是也很难做到理解透彻。因此，我写了这篇文章。
+这篇文章旨在通过代码的形式让大家更好的理解mvvm模式，相信大多数人读了这篇文章之后再去看其他诸如regular、vue等基于mvvm模式框架的源">
+<meta name="twitter:image" content="http://yoursite.com/images/mvvm.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/09/14/从零开始编写一个精简mvvm框架/"/>
+
+
+
+
+
+  <title> 从零开始编写一个精简mvvm框架 | 前端静径 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">前端静径</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle">前端成长足迹</p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/14/从零开始编写一个精简mvvm框架/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Jessica">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.gif">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="前端静径">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="前端静径" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                从零开始编写一个精简mvvm框架
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-14T15:12:24+08:00">
+                2017-09-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/09/14/从零开始编写一个精简mvvm框架/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/09/14/从零开始编写一个精简mvvm框架/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>mvvm模式相信做前端的人都不陌生，去网上搜mvvm，会出现一大堆关于mvvm模式的博文，但是这些博文大多都只是用图片和文字来进行抽象的概念讲解，对于刚接触mvvm模式的新手来说，这些概念虽然能够读懂，但是也很难做到理解透彻。因此，我写了这篇文章。</p>
+<p>这篇文章旨在通过代码的形式让大家更好的理解mvvm模式，相信大多数人读了这篇文章之后再去看其他诸如regular、vue等基于mvvm模式框架的源码，会容易很多。</p>
+<p>如果你对mvvm模式已经很熟悉并且也已经研读过并深刻理解了当下主流的前端框架，可以忽略下面的内容。如果你没有一点JavaScript基础，也请先去学习下再来读此文。</p>
+<h1 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h1><p>来张图来镇压此文：</p>
+<p><img src="/images/mvvm.png" alt="alt MVVM模式"></p>
+<p>MVVM模式是Model-View-ViewModel的缩写。简单的讲，它将view与model层分隔开，利用ViewModel层将model层的数据经过一定的处理变成适用于view层的数据结构传送到view层渲染界面，同时view层的视图更新也会告知ViewModel层，然后ViewModel层再更新model层。</p>
+<p>我们用一段学生信息的代码作为引子，然后一步步用重构成mvvm模式的样子。</p>
+<p>编写类似下面结构的学生信息：</p>
+<blockquote>
+<ul>
+<li>Name: Jessica Kent</li>
+<li>Height: 1.8m</li>
+<li>Weight: 70kg</li>
+</ul>
+</blockquote>
+<p>用常规的js代码是这样的：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> student = &#123;</div><div class="line">    <span class="string">'first-name'</span>: <span class="string">'Jessica'</span>,</div><div class="line">    <span class="string">'last-name'</span>: <span class="string">'Bre'</span>,</div><div class="line">    <span class="string">'height'</span>: <span class="number">180</span>,</div><div class="line">    <span class="string">'weight'</span>: <span class="number">70</span>,</div><div class="line">&#125;</div><div class="line"><span class="keyword">const</span> root = <span class="built_in">document</span>.createElement(<span class="string">'ul'</span>)</div><div class="line"><span class="keyword">const</span> nameLi = <span class="built_in">document</span>.createElement(<span class="string">'li'</span>)</div><div class="line"><span class="keyword">const</span> nameLabel = <span class="built_in">document</span>.createElement(<span class="string">'span'</span>)</div><div class="line">nameLabel.textContent = <span class="string">'Name: '</span></div><div class="line"><span class="keyword">const</span> name_ = <span class="built_in">document</span>.createElement(<span class="string">'span'</span>)</div><div class="line">name_.textContent = student[<span class="string">'first-name'</span>] + <span class="string">' '</span> + student[<span class="string">'last-name'</span>]</div><div class="line">nameLi.appendChild(nameLabel)</div><div class="line">nameLi.appendChild(name_)</div><div class="line"><span class="keyword">const</span> heightLi = <span class="built_in">document</span>.createElement(<span class="string">'li'</span>)</div><div class="line"><span class="keyword">const</span> heightLabel = <span class="built_in">document</span>.createElement(<span class="string">'span'</span>)</div><div class="line">heightLabel.textContent = <span class="string">'Height: '</span></div><div class="line"><span class="keyword">const</span> height = <span class="built_in">document</span>.createElement(<span class="string">'span'</span>)</div><div class="line">height.textContent = <span class="string">''</span> + student[<span class="string">'height'</span>] / <span class="number">100</span> + <span class="string">'m'</span></div><div class="line">heightLi.appendChild(heightLabel)</div><div class="line">heightLi.appendChild(height)</div><div class="line"><span class="keyword">const</span> weightLi = <span class="built_in">document</span>.createElement(<span class="string">'li'</span>)</div><div class="line"><span class="keyword">const</span> weightLabel = <span class="built_in">document</span>.createElement(<span class="string">'span'</span>)</div><div class="line">weightLabel.textContent = <span class="string">'Weight: '</span></div><div class="line"><span class="keyword">const</span> weight = <span class="built_in">document</span>.createElement(<span class="string">'span'</span>)</div><div class="line">weight.textContent = <span class="string">''</span> + student[<span class="string">'weight'</span>] + <span class="string">'kg'</span></div><div class="line">weightLi.appendChild(weightLabel)</div><div class="line">weightLi.appendChild(weight)</div><div class="line">root.appendChild(nameLi)</div><div class="line">root.appendChild(heightLi)</div><div class="line">root.appendChild(weightLi)</div><div class="line"><span class="built_in">document</span>.body.appendChild(root)</div></pre></td></tr></table></figure>
+<p>好长的一堆代码呀！别急，下面我们一步步优化！</p>
+<h1 id="DRY准则"><a href="#DRY准则" class="headerlink" title="DRY准则"></a>DRY准则</h1><p>程序设计中最广泛接受的规则之一就是“DRY”: “Do not Repeat Yourself”。很显然，上面的一段代码有很多重复的代码，与这个准则相违背。下面我们让这段学生信息更”Drier”。</p>
+<p>可以发现，这里写了很多遍<code>document.createElement</code>来创建节点，但是由于列表项都是相似的结构，所以我们没有必要一遍一遍的写。因此，我们进行一下封装：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> createListItem = <span class="function"><span class="keyword">function</span> (<span class="params">label, content</span>) </span>&#123;</div><div class="line">    <span class="keyword">const</span> li = <span class="built_in">document</span>.createElement(<span class="string">'li'</span>)</div><div class="line">    <span class="keyword">const</span> labelSpan = <span class="built_in">document</span>.createElement(<span class="string">'span'</span>)</div><div class="line">    labelSpan.textContent = label</div><div class="line">    <span class="keyword">const</span> contentSpan = <span class="built_in">document</span>.createElement(<span class="string">'span'</span>)</div><div class="line">    contentSpan.textContent = content</div><div class="line">    li.appendChild(labelSpan)</div><div class="line">    li.appendChild(contentSpan)</div><div class="line">    <span class="keyword">return</span> li</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>经过这步转化之后，真个App就变成了这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> student = &#123;</div><div class="line">    <span class="string">'first-name'</span>: <span class="string">'Jessica'</span>,</div><div class="line">    <span class="string">'last-name'</span>: <span class="string">'Bre'</span>,</div><div class="line">    <span class="string">'height'</span>: <span class="number">180</span>,</div><div class="line">    <span class="string">'weight'</span>: <span class="number">70</span>,</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> createListItem = <span class="function"><span class="keyword">function</span> (<span class="params">label, content</span>) </span>&#123;</div><div class="line">  <span class="keyword">const</span> li = <span class="built_in">document</span>.createElement(<span class="string">'li'</span>)</div><div class="line">  <span class="keyword">const</span> labelSpan = <span class="built_in">document</span>.createElement(<span class="string">'span'</span>)</div><div class="line">  labelSpan.textContent = label</div><div class="line">  <span class="keyword">const</span> contentSpan = <span class="built_in">document</span>.createElement(<span class="string">'span'</span>)</div><div class="line">  contentSpan.textContent = content</div><div class="line">  li.appendChild(labelSpan)</div><div class="line">  li.appendChild(contentSpan)</div><div class="line">  <span class="keyword">return</span> li</div><div class="line">&#125;</div><div class="line"><span class="keyword">const</span> root = <span class="built_in">document</span>.createElement(<span class="string">'ul'</span>)</div><div class="line"><span class="keyword">const</span> nameLi = createListItem(<span class="string">'Name: '</span>, student[<span class="string">'first-name'</span>] + <span class="string">' '</span> + student[<span class="string">'last-name'</span>])</div><div class="line"><span class="keyword">const</span> heightLi = createListItem(<span class="string">'Height: '</span>, student[<span class="string">'height'</span>] / <span class="number">100</span> + <span class="string">'m'</span>)</div><div class="line"><span class="keyword">const</span> weightLi = createListItem(<span class="string">'Weight: '</span>, student[<span class="string">'weight'</span>] + <span class="string">'kg'</span>)</div><div class="line">root.appendChild(nameLi)</div><div class="line">root.appendChild(heightLi)</div><div class="line">root.appendChild(weightLi)</div><div class="line"><span class="built_in">document</span>.body.appendChild(root)</div></pre></td></tr></table></figure>
+<p>是不是变得更短了，也更易读了？即使你不看<code>createListItem</code>函数的实现，光看<code>const nameLi = createListItem(&#39;Name: &#39;, student[&#39;first-name&#39;] + &#39; &#39; + student[&#39;last-name&#39;])</code>也能大致明白这段代码时干什么的。</p>
+<p>但是上面的代码封装的还不够，我们再进一步封装，因为其实大多数人也并不关注你如何创建列表，因此可以这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> student = &#123;</div><div class="line">    <span class="string">'first-name'</span>: <span class="string">'Jessica'</span>,</div><div class="line">    <span class="string">'last-name'</span>: <span class="string">'Bre'</span>,</div><div class="line">    <span class="string">'height'</span>: <span class="number">180</span>,</div><div class="line">    <span class="string">'weight'</span>: <span class="number">70</span>,</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">const</span> createList = <span class="function"><span class="keyword">function</span>(<span class="params">kvPairs</span>)</span>&#123;</div><div class="line">  <span class="keyword">const</span> createListItem = <span class="function"><span class="keyword">function</span> (<span class="params">label, content</span>) </span>&#123;</div><div class="line">    <span class="keyword">const</span> li = <span class="built_in">document</span>.createElement(<span class="string">'li'</span>)</div><div class="line">    <span class="keyword">const</span> labelSpan = <span class="built_in">document</span>.createElement(<span class="string">'span'</span>)</div><div class="line">    labelSpan.textContent = label</div><div class="line">    <span class="keyword">const</span> contentSpan = <span class="built_in">document</span>.createElement(<span class="string">'span'</span>)</div><div class="line">    contentSpan.textContent = content</div><div class="line">    li.appendChild(labelSpan)</div><div class="line">    li.appendChild(contentSpan)</div><div class="line">    <span class="keyword">return</span> li</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">const</span> root = <span class="built_in">document</span>.createElement(<span class="string">'ul'</span>)</div><div class="line">  kvPairs.forEach(<span class="function"><span class="keyword">function</span> (<span class="params">x</span>) </span>&#123;</div><div class="line">    root.appendChild(createListItem(x.key, x.value))</div><div class="line">  &#125;)</div><div class="line">  <span class="keyword">return</span> root</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">const</span> ul = createList([</div><div class="line">  &#123;</div><div class="line">    <span class="attr">key</span>: <span class="string">'Name: '</span>,</div><div class="line">    <span class="attr">value</span>: student[<span class="string">'first-name'</span>] + <span class="string">' '</span> + student[<span class="string">'last-name'</span>]</div><div class="line">  &#125;,</div><div class="line">  &#123;</div><div class="line">    <span class="attr">key</span>: <span class="string">'Height: '</span>,</div><div class="line">    <span class="attr">value</span>: student[<span class="string">'height'</span>] / <span class="number">100</span> + <span class="string">'m'</span></div><div class="line">  &#125;,</div><div class="line">  &#123;</div><div class="line">    <span class="attr">key</span>: <span class="string">'Weight: '</span>,</div><div class="line">    <span class="attr">value</span>: student[<span class="string">'weight'</span>] + <span class="string">'kg'</span></div><div class="line">  &#125;])</div><div class="line"><span class="built_in">document</span>.body.appendChild(ul)</div></pre></td></tr></table></figure>
+<p>有没有看到MVVM风格的影子？<code>student</code>对象是原始数据，相当于<code>Model</code>层；<code>createList</code>创建了<code>dom</code>树，相当于<code>View</code>层，那么<code>ViewModel</code>层呢？仔细观察，其实我们传给<code>createList</code>函数的参数就是<code>Model</code>的数据的改造，为了让<code>Model</code>的数据符合<code>View</code>的结构，我们做了这样的改造，因此虽然这段函数里面没有独立的<code>ViewModel</code>层，但是它确实是存在的！聪明的同学应该想到了，下一步就是来独立出<code>ViewModel</code>层了吧~</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Model</span></div><div class="line"><span class="keyword">const</span> tk = &#123;</div><div class="line">    <span class="string">'first-name'</span>: <span class="string">'Jessica'</span>,</div><div class="line">    <span class="string">'last-name'</span>: <span class="string">'Bre'</span>,</div><div class="line">    <span class="string">'height'</span>: <span class="number">180</span>,</div><div class="line">    <span class="string">'weight'</span>: <span class="number">70</span>,</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//View</span></div><div class="line"><span class="keyword">const</span> createList = <span class="function"><span class="keyword">function</span>(<span class="params">kvPairs</span>)</span>&#123;</div><div class="line">  <span class="keyword">const</span> createListItem = <span class="function"><span class="keyword">function</span> (<span class="params">label, content</span>) </span>&#123;</div><div class="line">    <span class="keyword">const</span> li = <span class="built_in">document</span>.createElement(<span class="string">'li'</span>)</div><div class="line">    <span class="keyword">const</span> labelSpan = <span class="built_in">document</span>.createElement(<span class="string">'span'</span>)</div><div class="line">    labelSpan.textContent = label</div><div class="line">    <span class="keyword">const</span> contentSpan = <span class="built_in">document</span>.createElement(<span class="string">'span'</span>)</div><div class="line">    contentSpan.textContent = content</div><div class="line">    li.appendChild(labelSpan)</div><div class="line">    li.appendChild(contentSpan)</div><div class="line">    <span class="keyword">return</span> li</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">const</span> root = <span class="built_in">document</span>.createElement(<span class="string">'ul'</span>)</div><div class="line">  kvPairs.forEach(<span class="function"><span class="keyword">function</span> (<span class="params">x</span>) </span>&#123;</div><div class="line">    root.appendChild(createListItem(x.key, x.value))</div><div class="line">  &#125;)</div><div class="line">  <span class="keyword">return</span> root</div><div class="line">&#125;</div><div class="line"><span class="comment">//ViewModel</span></div><div class="line"><span class="keyword">const</span> formatStudent = <span class="function"><span class="keyword">function</span> (<span class="params">student</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> [</div><div class="line">    &#123;</div><div class="line">      <span class="attr">key</span>: <span class="string">'Name: '</span>,</div><div class="line">      <span class="attr">value</span>: student[<span class="string">'first-name'</span>] + <span class="string">' '</span> + student[<span class="string">'last-name'</span>]</div><div class="line">    &#125;,</div><div class="line">    &#123;</div><div class="line">      <span class="attr">key</span>: <span class="string">'Height: '</span>,</div><div class="line">      <span class="attr">value</span>: student[<span class="string">'height'</span>] / <span class="number">100</span> + <span class="string">'m'</span></div><div class="line">    &#125;,</div><div class="line">    &#123;</div><div class="line">      <span class="attr">key</span>: <span class="string">'Weight: '</span>,</div><div class="line">      <span class="attr">value</span>: student[<span class="string">'weight'</span>] + <span class="string">'kg'</span></div><div class="line">    &#125;]</div><div class="line">&#125;</div><div class="line"><span class="keyword">const</span> ul = createList(formatStudent(tk))</div><div class="line"><span class="built_in">document</span>.body.appendChild(ul)</div></pre></td></tr></table></figure>
+<p>这看上去更舒服了。但是，最后两行还能封装~</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> run = <span class="function"><span class="keyword">function</span> (<span class="params">root, &#123;model, view, vm&#125;</span>) </span>&#123;</div><div class="line">  <span class="keyword">const</span> rendered = view(vm(model))</div><div class="line">  root.appendChild(rendered)</div><div class="line">&#125;</div><div class="line">run(<span class="built_in">document</span>.body, &#123;</div><div class="line">      <span class="attr">model</span>: tk, </div><div class="line">      <span class="attr">view</span>: createList, </div><div class="line">      <span class="attr">vm</span>: formatStudent</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>这种写法，有没有觉得看上去很熟悉？</p>
+<h1 id="让我们来加点互动"><a href="#让我们来加点互动" class="headerlink" title="让我们来加点互动"></a>让我们来加点互动</h1><p>前面学生信息的身高的单位都是默认<code>m</code>，如果新增一个需求，要求学生的身高的单位可以在<code>m</code>和<code>cm</code>之间切换呢？</p>
+<p>首先需要一个变量来保存度量单位，因此这里必须用一个新的Model：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> tk = &#123;</div><div class="line">    <span class="string">'first-name'</span>: <span class="string">'Jessica'</span>,</div><div class="line">    <span class="string">'last-name'</span>: <span class="string">'Bre'</span>,</div><div class="line">    <span class="string">'height'</span>: <span class="number">180</span>,</div><div class="line">    <span class="string">'weight'</span>: <span class="number">70</span>,</div><div class="line">&#125;</div><div class="line"><span class="keyword">const</span> measurement = <span class="string">'cm'</span></div></pre></td></tr></table></figure>
+<p>为了让<code>tk</code>更方便的被其他模块重用，这里选择增加一个<code>measurement</code>数据源，而不是直接修改<code>tk</code>。</p>
+<p>在视图部分要增加一个radio单选表单，用来切换身高单位。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> createList = <span class="function"><span class="keyword">function</span>(<span class="params">kvPairs</span>)</span>&#123;</div><div class="line">  <span class="keyword">const</span> createListItem = <span class="function"><span class="keyword">function</span> (<span class="params">label, content</span>) </span>&#123;</div><div class="line">    <span class="keyword">const</span> li = <span class="built_in">document</span>.createElement(<span class="string">'li'</span>)</div><div class="line">    <span class="keyword">const</span> labelSpan = <span class="built_in">document</span>.createElement(<span class="string">'span'</span>)</div><div class="line">    labelSpan.textContent = label</div><div class="line">    <span class="keyword">const</span> contentSpan = <span class="built_in">document</span>.createElement(<span class="string">'span'</span>)</div><div class="line">    contentSpan.textContent = content</div><div class="line">    li.appendChild(labelSpan)</div><div class="line">    li.appendChild(contentSpan)</div><div class="line">    <span class="keyword">return</span> li</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">const</span> root = <span class="built_in">document</span>.createElement(<span class="string">'ul'</span>)</div><div class="line">  kvPairs.forEach(<span class="function"><span class="keyword">function</span> (<span class="params">x</span>) </span>&#123;</div><div class="line">    root.appendChild(createListItem(x.key, x.value))</div><div class="line">  &#125;)</div><div class="line">  <span class="keyword">return</span> root</div><div class="line">&#125;</div><div class="line"><span class="keyword">const</span> createToggle = <span class="function"><span class="keyword">function</span> (<span class="params">options</span>) </span>&#123;</div><div class="line">  <span class="keyword">const</span> createRadio = <span class="function"><span class="keyword">function</span> (<span class="params">name, opt</span>)</span>&#123;</div><div class="line">    <span class="keyword">const</span> radio = <span class="built_in">document</span>.createElement(<span class="string">'input'</span>)</div><div class="line">    radio.name = name</div><div class="line">    radio.value = opt.value</div><div class="line">    radio.type = <span class="string">'radio'</span></div><div class="line">    radio.textContent = opt.value</div><div class="line">    radio.addEventListener(<span class="string">'click'</span>, opt.onclick)</div><div class="line">    radio.checked = opt.checked</div><div class="line">    <span class="keyword">return</span> radio</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">const</span> root = <span class="built_in">document</span>.createElement(<span class="string">'form'</span>)</div><div class="line">  options.opts.forEach(<span class="function"><span class="keyword">function</span> (<span class="params">x</span>) </span>&#123;</div><div class="line">    root.appendChild(createRadio(options.name, x))</div><div class="line">    root.appendChild(<span class="built_in">document</span>.createTextNode(x.value))</div><div class="line">  &#125;)</div><div class="line">  <span class="keyword">return</span> root</div><div class="line">&#125;</div><div class="line"><span class="keyword">const</span> createToggleableList = <span class="function"><span class="keyword">function</span>(<span class="params">vm</span>)</span>&#123;</div><div class="line">  <span class="keyword">const</span> listView = createList(vm.kvPairs)</div><div class="line">  <span class="keyword">const</span> toggle = createToggle(vm.options)</div><div class="line">  <span class="keyword">const</span> root = <span class="built_in">document</span>.createElement(<span class="string">'div'</span>)</div><div class="line">  root.appendChild(toggle)</div><div class="line">  root.appendChild(listView)</div><div class="line">  <span class="keyword">return</span> root</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>目前为止，视图部分是与业务隔离的。接下来是ViewModel部分，<code>createToggleableList</code>函数需要与之前的<code>createList</code>函数不同的参数。因此，对View-Model结构重构是有必要的：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> createVm = <span class="function"><span class="keyword">function</span> (<span class="params">model</span>) </span>&#123;</div><div class="line">  <span class="keyword">const</span> calcHeight = <span class="function"><span class="keyword">function</span> (<span class="params">measurement, cms</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (measurement === <span class="string">'m'</span>)&#123;</div><div class="line">      <span class="keyword">return</span> cms / <span class="number">100</span> + <span class="string">'m'</span></div><div class="line">    &#125;<span class="keyword">else</span>&#123;</div><div class="line">      <span class="keyword">return</span> cms + <span class="string">'cm'</span></div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">const</span> options = &#123;</div><div class="line">    <span class="attr">name</span>: <span class="string">'measurement'</span>,</div><div class="line">    <span class="attr">opts</span>: [</div><div class="line">      &#123;</div><div class="line">        <span class="attr">value</span>: <span class="string">'cm'</span>,</div><div class="line">        <span class="attr">checked</span>: model.measurement === <span class="string">'cm'</span>,</div><div class="line">        <span class="attr">onclick</span>: <span class="function"><span class="params">()</span> =&gt;</span> model.measurement = <span class="string">'cm'</span></div><div class="line">      &#125;,</div><div class="line">      &#123;</div><div class="line">        <span class="attr">value</span>: <span class="string">'m'</span>,</div><div class="line">        <span class="attr">checked</span>: model.measurement === <span class="string">'m'</span>,</div><div class="line">        <span class="attr">onclick</span>: <span class="function"><span class="params">()</span> =&gt;</span> model.measurement = <span class="string">'m'</span></div><div class="line">      &#125;</div><div class="line">    ]</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">const</span> kvPairs = [</div><div class="line">    &#123;</div><div class="line">      <span class="attr">key</span>: <span class="string">'Name: '</span>,</div><div class="line">      <span class="attr">value</span>: model.student[<span class="string">'first-name'</span>] + <span class="string">' '</span> + model.student[<span class="string">'last-name'</span>]</div><div class="line">    &#125;,</div><div class="line">    &#123;</div><div class="line">      <span class="attr">key</span>: <span class="string">'Height: '</span>,</div><div class="line">      <span class="attr">value</span>: calcHeight(model.measurement, model.student[<span class="string">'height'</span>])</div><div class="line">    &#125;,</div><div class="line">    &#123;</div><div class="line">      <span class="attr">key</span>: <span class="string">'Weight: '</span>,</div><div class="line">      <span class="attr">value</span>: model.student[<span class="string">'weight'</span>] + <span class="string">'kg'</span></div><div class="line">    &#125;,</div><div class="line">    &#123;</div><div class="line">      <span class="attr">key</span>: <span class="string">'BMI: '</span>,</div><div class="line">      <span class="attr">value</span>:  model.student[<span class="string">'weight'</span>] / (model.student[<span class="string">'height'</span>] * model.student[<span class="string">'height'</span>] / <span class="number">10000</span>)</div><div class="line">    &#125;]</div><div class="line">  <span class="keyword">return</span> &#123;kvPairs, options&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里为<code>createToggle</code>添加了<code>ops</code>，并且将<code>ops</code>封装成了一个对象。根据度量单位，使用不同的方式去计算身高。当任何一个<code>radio</code>被点击，数据的度量单位将会改变。</p>
+<p>看上去很完美，但是当你点击radio标签的时候，视图不会有任何改变。因为这里还没有为视图做更新算法。有关MVVM如何处理视图更新，那是一个比较大的课题，需要另辟一个章节，由于本文写的是一个精简的MVVM框架，这里不再赘述，并用最简单的方式在实现它:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> run = <span class="function"><span class="keyword">function</span> (<span class="params">root, &#123;model, view, vm&#125;</span>) </span>&#123;</div><div class="line">  <span class="keyword">let</span> m = &#123;...model&#125;</div><div class="line">  <span class="keyword">let</span> m_old = &#123;&#125;</div><div class="line">  setInterval( <span class="function"><span class="keyword">function</span> (<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="keyword">if</span>(!_.isEqual(m, m_old))&#123;</div><div class="line">      <span class="keyword">const</span> rendered = view(vm(m))</div><div class="line">      root.innerHTML = <span class="string">''</span></div><div class="line">      root.appendChild(rendered)</div><div class="line">      m_old = &#123;...m&#125;</div><div class="line">    &#125;</div><div class="line">  &#125;,<span class="number">1000</span>)</div><div class="line">&#125;</div><div class="line">run(<span class="built_in">document</span>.body, &#123;</div><div class="line">      <span class="attr">model</span>: &#123;<span class="attr">student</span>:tk, measurement&#125;, </div><div class="line">      <span class="attr">view</span>: createToggleableList, </div><div class="line">      <span class="attr">vm</span>: createVm </div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>这里引用了一个外部库<code>lodash</code>来比较数据模型是否有更新。此段代码应用轮询的机制，在每秒都会检测数据是否发生变化，这是最笨的方法，也有可能会导致性能问题。但已经达到了精简mvvm框架演示的目的。</p>
+<h1 id="MVVM框架的诞生"><a href="#MVVM框架的诞生" class="headerlink" title="MVVM框架的诞生"></a>MVVM框架的诞生</h1><p>以上便是一个简短精简的MVVM风格的学生信息的示例。至此，一个精简的mvvm框架其实已经出来了：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line">* @param &#123;Node&#125; root</div><div class="line">* @param &#123;Object&#125; model</div><div class="line">* @param &#123;Function&#125; view</div><div class="line">* @param &#123;Function&#125; vm</div><div class="line">*/</div><div class="line"><span class="keyword">const</span> run = <span class="function"><span class="keyword">function</span> (<span class="params">root, &#123;model, view, vm&#125;</span>) </span>&#123;</div><div class="line">  <span class="keyword">let</span> m = &#123;...model&#125;</div><div class="line">  <span class="keyword">let</span> m_old = &#123;&#125;</div><div class="line">  setInterval( <span class="function"><span class="keyword">function</span> (<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="keyword">if</span>(!_.isEqual(m, m_old))&#123;</div><div class="line">      <span class="keyword">const</span> rendered = view(vm(m))</div><div class="line">      root.innerHTML = <span class="string">''</span></div><div class="line">      root.appendChild(rendered)</div><div class="line">      m_old = &#123;...m&#125;</div><div class="line">    &#125;</div><div class="line">  &#125;,<span class="number">1000</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>什么?你确定不是在开玩笑？一个只有十行的框架？请记住：</p>
+<blockquote>
+<p>框架是对如何组织代码和整个项目如何通用运作的抽象。</p>
+</blockquote>
+<p>这并不意味着你应该有一堆代码或混乱的类，尽管企业可用的API列表经常都很可怕的长。但是如果你研读一个框架仓库的核心文件夹，你可能发现它会出乎意料的小（相比于整个项目来说）。其核心代码包含主要工作进程，而其他部分只是帮助开发人员以更加舒适的方式构建应用程序的附件。有兴趣的同学可以去看看<code>cycle.js</code>,这个框架只有124行（包含注释和空格）。</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p><a href="https://twiknight.gitbooks.io/blog/content/write_a_mvvm_framework_from_scratch_1.html" target="_blank" rel="external">Write a MVVM framework from scratch</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/javascript-mvvm-前端-框架/" rel="tag"># javascript mvvm 前端 框架</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/08/22/玩转js类型转换/" rel="next" title="玩转js类型转换">
+                <i class="fa fa-chevron-left"></i> 玩转js类型转换
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/09/14/从零开始编写一个精简mvvm框架/"
+           data-title="从零开始编写一个精简mvvm框架" data-url="http://yoursite.com/2017/09/14/从零开始编写一个精简mvvm框架/">
+      </div>
+    
+    <div id="container"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+var gitment = new Gitment({
+  owner: 'mengera88',
+  repo: 'mengera88.github.io',
+  oauth: {
+    client_id: 'd7cbe4a57bd21cf9e226',
+    client_secret: 'c500a92c31b1f17fc147b0e191448accdf310ece',
+  },
+})
+gitment.render('comments')
+</script>
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Jessica" />
+          <p class="site-author-name" itemprop="name">Jessica</p>
+          <p class="site-description motion-element" itemprop="description">前端 node JavaScript 学习 技术杂谈</p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#引子"><span class="nav-number">2.</span> <span class="nav-text">引子</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DRY准则"><span class="nav-number">3.</span> <span class="nav-text">DRY准则</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#让我们来加点互动"><span class="nav-number">4.</span> <span class="nav-text">让我们来加点互动</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MVVM框架的诞生"><span class="nav-number">5.</span> <span class="nav-text">MVVM框架的诞生</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-number">6.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jessica</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+</br>
+<span id="busuanzi_container_site_pv">
+  Total <span id="busuanzi_value_site_pv"></span> views.
+  您是jessica的第<span id="busuanzi_value_site_uv"></span>个小伙伴
+  <span id="busuanzi_value_page_pv"></span> Hits
+</span>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"mengera88"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
