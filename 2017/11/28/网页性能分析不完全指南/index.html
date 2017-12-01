@@ -1,0 +1,836 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="前端 性能 测试 优化," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言经常能在博客或者论坛上看到很多有关前端性能优化的文章，但是却很少看到如何分析一个网页的性能的文章。到底什么样的指标（或者说是标准）代表这个网页性能好或者不好，通过什么方式来得到这些指标呢？因此，本文来讲述下如何分析一个网页的性能的好与差。本文用到的工具：chrome浏览器。下面我们一一来看。
+用RAIL模型评估运行时性能首先要说明的是，运行性能是指你的网页在运行的时候的性能，而不是加载的时候的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网页性能分析不完全指南">
+<meta property="og:url" content="http://yoursite.com/2017/11/28/网页性能分析不完全指南/index.html">
+<meta property="og:site_name" content="前端静径">
+<meta property="og:description" content="前言经常能在博客或者论坛上看到很多有关前端性能优化的文章，但是却很少看到如何分析一个网页的性能的文章。到底什么样的指标（或者说是标准）代表这个网页性能好或者不好，通过什么方式来得到这些指标呢？因此，本文来讲述下如何分析一个网页的性能的好与差。本文用到的工具：chrome浏览器。下面我们一一来看。
+用RAIL模型评估运行时性能首先要说明的是，运行性能是指你的网页在运行的时候的性能，而不是加载的时候的">
+<meta property="og:image" content="http://yoursite.com/images/rail_model.png">
+<meta property="og:image" content="http://yoursite.com/images/render_frame.png">
+<meta property="og:image" content="http://yoursite.com/images/demo_1.png">
+<meta property="og:image" content="http://yoursite.com/images/demo_2.png">
+<meta property="og:image" content="http://yoursite.com/images/demo_3.png">
+<meta property="og:image" content="http://yoursite.com/images/demo_4.png">
+<meta property="og:image" content="http://yoursite.com/images/demo_5.png">
+<meta property="og:image" content="http://yoursite.com/images/demo_6.png">
+<meta property="og:image" content="http://yoursite.com/images/demo_7.png">
+<meta property="og:image" content="http://yoursite.com/images/demo_8.png">
+<meta property="og:image" content="http://yoursite.com/images/demo_9.png">
+<meta property="og:image" content="http://yoursite.com/images/demo_10.png">
+<meta property="og:image" content="http://yoursite.com/images/demo_11.png">
+<meta property="og:image" content="http://yoursite.com/images/demo_12.png">
+<meta property="og:image" content="http://yoursite.com/images/demo_13.png">
+<meta property="og:image" content="http://yoursite.com/images/demo_14.png">
+<meta property="og:image" content="http://yoursite.com/images/demo_15.png">
+<meta property="og:updated_time" content="2017-12-01T03:29:29.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="网页性能分析不完全指南">
+<meta name="twitter:description" content="前言经常能在博客或者论坛上看到很多有关前端性能优化的文章，但是却很少看到如何分析一个网页的性能的文章。到底什么样的指标（或者说是标准）代表这个网页性能好或者不好，通过什么方式来得到这些指标呢？因此，本文来讲述下如何分析一个网页的性能的好与差。本文用到的工具：chrome浏览器。下面我们一一来看。
+用RAIL模型评估运行时性能首先要说明的是，运行性能是指你的网页在运行的时候的性能，而不是加载的时候的">
+<meta name="twitter:image" content="http://yoursite.com/images/rail_model.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/11/28/网页性能分析不完全指南/"/>
+
+
+
+
+
+  <title> 网页性能分析不完全指南 | 前端静径 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">前端静径</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle">前端成长足迹</p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/28/网页性能分析不完全指南/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Jessica">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.gif">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="前端静径">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="前端静径" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                网页性能分析不完全指南
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-11-28T14:15:24+08:00">
+                2017-11-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/11/28/网页性能分析不完全指南/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/11/28/网页性能分析不完全指南/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>经常能在博客或者论坛上看到很多有关前端性能优化的文章，但是却很少看到如何分析一个网页的性能的文章。到底什么样的指标（或者说是标准）代表这个网页性能好或者不好，通过什么方式来得到这些指标呢？因此，本文来讲述下如何分析一个网页的性能的好与差。本文用到的工具：chrome浏览器。下面我们一一来看。</p>
+<h1 id="用RAIL模型评估运行时性能"><a href="#用RAIL模型评估运行时性能" class="headerlink" title="用RAIL模型评估运行时性能"></a>用RAIL模型评估运行时性能</h1><p>首先要说明的是，运行性能是指你的网页在运行的时候的性能，而不是加载的时候的性能。RAIL（Response-Animation-Idle-Load）模型是一种以用户为中心的性能模型，每个网络应用均具有与其生命周期相关的四个不同方面，且这些方面以不同的方式影响着性能。用官网图来镇压一下：</p>
+<p><img src="/images/rail_model.png" alt="alt RAIL模型"></p>
+<p>下面分别从四个方面阐述RAIL模型：</p>
+<h2 id="以用户为中心"><a href="#以用户为中心" class="headerlink" title="以用户为中心"></a>以用户为中心</h2><p>任何网站的终极目标不是让其在任何特定设备上都能运行很快，而是让使用该网站的用户满意。用户花在网站上的大多数时间不是等待加载，而是在使用过程中等待响应。那么怎样评价延迟？让我们来看下面的表：</p>
+<table>
+<thead>
+<tr>
+<th>延迟</th>
+<th>用户反应</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0~16毫秒</td>
+<td>人们特别擅长跟踪运动，如果动画不流畅，他们就会对运动心生反感。 用户可以感知每秒渲染60帧的平滑动画转场，也就是每帧16毫秒（包括浏览器将新帧绘制到屏幕上所需的时间），那么，留给应用大约只有10毫秒的时间来生成新帧。</td>
+</tr>
+<tr>
+<td>0~100毫秒</td>
+<td>在此时间内响应用户操作，他们会觉得可以立即获得结果。时间再长，操作与反应之间的连接就会中断</td>
+</tr>
+<tr>
+<td>100~300毫秒</td>
+<td>用户会遇到轻微可觉察的延迟。</td>
+</tr>
+<tr>
+<td>300~1000毫秒</td>
+<td>在此时间内，延迟感觉像是任务自然和持续发展的一部分。对于网络上的大多数用户，加载页面或更改视图就像在完成一个任务。</td>
+</tr>
+<tr>
+<td>1000+毫秒</td>
+<td>超过1秒，用户的注意力将离开他们正在执行的任务。</td>
+</tr>
+<tr>
+<td>10,000+毫秒</td>
+<td>用户感到失望，可能会放弃任务，并且之后他们或许不会再回来。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="响应（Response）-在100毫秒以内响应"><a href="#响应（Response）-在100毫秒以内响应" class="headerlink" title="响应（Response）: 在100毫秒以内响应"></a>响应（Response）: 在100毫秒以内响应</h2><p>在用户注意到滞后之前网站有100毫秒的时间可以响应用户输入。这适用于大多数输入，比如点击按钮、切换表单控件或是启动动画。但是不适用于触摸拖动或滚动（因为触摸拖动或滚动属于动画范畴）。如果网站未响应，操作与反应之间的连接就会中断，用户会注意到。因此，对于需要超过500毫秒才能完成的操作，需要始终提供反馈。</p>
+<p>其实，有些动作可以不等到用户操作了才响应。网站可以使用此100毫秒时间在后台来执行其他开销大的工作，但前提是不影响用户当前的操作。</p>
+<h2 id="动画（Animation）-在10毫秒内生成一帧（即达到60fps）"><a href="#动画（Animation）-在10毫秒内生成一帧（即达到60fps）" class="headerlink" title="动画（Animation）: 在10毫秒内生成一帧（即达到60fps）"></a>动画（Animation）: 在10毫秒内生成一帧（即达到60fps）</h2><p>动画不止是奇特的UI效果，例如滚动和触摸拖动也属于动画类型。如果动画帧率发生变化，用户便会注意到。网站的目标是每秒生成60帧，每一帧必须完成以下所有步骤：</p>
+<p><img src="/images/render_frame.png" alt="alt 渲染步骤"></p>
+<p>从纯粹的数学角度而言，每帧的预算约为16毫秒（1000毫秒/60帧=16.66毫秒/帧）。但将新帧渲染到屏幕上也是需要花费时间的，因此实际上浏览器<strong>只有10毫秒的时间来执行代码</strong>，如果无法符合此估算，帧率将下降，并且内容会在屏幕上抖动，也就是卡顿，会对用户体验产生负面影响。因此，如果可能，最好利用好100毫秒响应预先计算开销大的工作，这样网站就更有可能实现60fps的性能。</p>
+<h2 id="空闲（Idle）：最大程度增加空闲时间"><a href="#空闲（Idle）：最大程度增加空闲时间" class="headerlink" title="空闲（Idle）：最大程度增加空闲时间"></a>空闲（Idle）：最大程度增加空闲时间</h2><p>可以利用空闲来完成推迟的工作。例如：尽可能减少预加载的数据，以便网站能够快速加载，并利用空闲时间加载剩余数据。推迟的工作应分成每个耗时约50毫秒的多个块。如果用户开始交互，优先级最高的事项是响应用户。要实现小于100毫秒的响应，应用必须在每50毫秒内将控制返回给主线程，这样网站就可以执行其他像素管道、对用户输入作出反应等命令。</p>
+<p>因此，以50毫秒块工作既可以完成任务，又能确保即时的响应。</p>
+<h2 id="加载（Load）：在1000毫秒以内呈现内容"><a href="#加载（Load）：在1000毫秒以内呈现内容" class="headerlink" title="加载（Load）：在1000毫秒以内呈现内容"></a>加载（Load）：在1000毫秒以内呈现内容</h2><p>在1秒钟内加载网站，否则，用户的注意力会分散，他们处理任务的感觉会中断。其实也无需在1秒内加载所有内容以让用户产生完整加载的感觉。应该启用渐进式渲染和在后台执行一些工作，将非必需的加载推迟到空闲时间段再来加载。</p>
+<h2 id="关键RAIL指标汇总"><a href="#关键RAIL指标汇总" class="headerlink" title="关键RAIL指标汇总"></a>关键RAIL指标汇总</h2><p>要根据RAIL指标评估您的网站，可使用Chrome的DevTools的performance面板（旧版本chrome可以用TimeLine工具）记录用户操作（具体可见下面一节讲解如何记录性能数据）。然后根据这些关键RAIL指标检查面板中的记录时间。</p>
+<table>
+<thead>
+<tr>
+<th>RAIL步骤</th>
+<th>关键指标</th>
+<th>用户操作 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>响应</td>
+<td>输入延迟时间（从点按到绘制）小于100毫秒。</td>
+<td>用户点按按钮（例如打开导航）。</td>
+</tr>
+<tr>
+<td>动画</td>
+<td>每个帧的工作（从JS到绘制）完成时间小于16毫秒。</td>
+<td>用户滚动页面，拖动手指（例如打开菜单）或看到动画。 拖动时，应用的响应与手指位置有关（例如，拉动刷新、滑动轮播）。 此指标仅适用于拖动的持续阶段，不适用于开始阶段。</td>
+</tr>
+<tr>
+<td>空闲</td>
+<td>主线程JS工作分成不大于50毫秒的块。</td>
+<td>用户没有与页面交互，但主线程应足够用于处理下一个用户输入。</td>
+</tr>
+<tr>
+<td>加载</td>
+<td>页面可以在1000毫秒内就绪。</td>
+<td>用户加载页面并看到关键路径内容。</td>
+</tr>
+</tbody>
+</table>
+<h1 id="利用chrome开发者工具执行运行时性能评估"><a href="#利用chrome开发者工具执行运行时性能评估" class="headerlink" title="利用chrome开发者工具执行运行时性能评估"></a>利用chrome开发者工具执行运行时性能评估</h1><p>下面的教程指引了如何利用chrome开发车工具(DevTools)的performance面板来分析运行时性能。</p>
+<blockquote>
+<p>注意：下面的指引基于chrome 62版本，如果你用了其他版本的chrome，其UI界面和特征会有些许的不同。</p>
+</blockquote>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>首先我们打开官网提供的<a href="https://googlechrome.github.io/devtools-samples/jank/" target="_blank" rel="external">demo</a>,请确保用浏览器隐身模式打开，以保证浏览器是在一个纯净的环境中。否则，如果你安装了很多浏览器扩展，会对你性能分析的数据产生一定的干扰。接着打开DevTools，具体方法：<code>Command+Option+I (Mac) or Control+Shift+I (Windows, Linux)</code>。</p>
+<p><img src="/images/demo_1.png" alt="alt 图示"></p>
+<h2 id="模拟手机CPU"><a href="#模拟手机CPU" class="headerlink" title="模拟手机CPU"></a>模拟手机CPU</h2><p>手机设备具有比台式机和笔记本更小的CPU频率，无论何时评估你的网页，你都必须使用CPU限制来模拟网页在手机设备上表现。</p>
+<ol>
+<li>在DevTools中，点击<code>Performance</code>面板</li>
+<li>确保<code>Screenshots</code>复选框选中</li>
+<li>点击<code>Capture Settings</code>（右上角的红色设置图标），展开其他设置</li>
+<li>CPU中选择<code>4x slowdown</code>，DevTools会将CPU频率限制到平时的四分之一。</li>
+</ol>
+<p><img src="/images/demo_2.png" alt="alt 图示"></p>
+<blockquote>
+<p>注意：如果测试其他页面，如果想测试在低端机上的性能，可以选择更低的倍数。这个只是为了更好的演示，选择了小一点的限制。</p>
+</blockquote>
+<h2 id="设置demo"><a href="#设置demo" class="headerlink" title="设置demo"></a>设置demo</h2><ol>
+<li>连续点击<code>Add 10</code>按钮，知道明显能看到蓝色方框比之前慢了，在高端机上可能要点击20次左右。</li>
+<li>点击<code>Optimize</code>按钮，蓝色方框应该移动地更快更平稳。</li>
+<li>点击<code>Un-Optimize</code>按钮，蓝色的方块移动得更慢更松弛。<blockquote>
+<p>注意：如果你没有观察到明显变慢，尝试点击几次<code>Subtract 10</code>按钮再尝试前面步骤。否则如果你添加了太多的蓝色方框，就会耗尽CPU资源。</p>
+</blockquote>
+</li>
+</ol>
+<h2 id="记录运行性能"><a href="#记录运行性能" class="headerlink" title="记录运行性能"></a>记录运行性能</h2><p>当你页面运行网页的优化版本，蓝色方框移动速度会变快。为了更好的检测出性能问题，我们记录网页非优化的版本。</p>
+<p><img src="/images/demo_3.png" alt="alt 图示"></p>
+<ol>
+<li>点击<code>Record</code>按钮（见图示），DevTools会在页面运行时捕获性能指标。</li>
+<li>等待几秒钟</li>
+<li>点击<code>Stop</code>按钮（见图示），DevTools停止记录，并开始处理数据，随后将处理结果显示在<code>performance</code>面板中,如下图</li>
+</ol>
+<p><img src="/images/demo_4.png" alt="alt 图示"></p>
+<h2 id="分析结果"><a href="#分析结果" class="headerlink" title="分析结果"></a>分析结果</h2><p>关键的性能指标是FPS，其值如果是60FPS，用户体验会很好，使用网站的感受也是愉悦的。</p>
+<h3 id="FPS图表"><a href="#FPS图表" class="headerlink" title="FPS图表"></a>FPS图表</h3><p>查看FPS图表（图中蓝色方框框住的部分），如果看到了红色长条，就代表帧率太低并已经影响到用户体验了。一般情况下，绿色长条越高，FPS越高。</p>
+<p><img src="/images/demo_5.png" alt="alt 图示"></p>
+<h3 id="CPU图表"><a href="#CPU图表" class="headerlink" title="CPU图表"></a>CPU图表</h3><p>在FPS下面就是CPU图表，图表中的颜色和面板底部的<code>Summary</code>tab中的颜色是匹配的。CPU颜色越丰富，代表在录制过程中CPU已经最大化了。如果这段丰富颜色的长条比较长，这就暗示网站应该想办法让CPU做更少的工作了，也就是说代码逻辑需要做优化了。</p>
+<p><img src="/images/demo_6.png" alt="alt 图示"></p>
+<p>顺便提一下的就是，无论鼠标移动到FPS,CPU或者NET图表上，DevTools都会显示在该时间节点上的屏幕截图，将你的鼠标左右移动，可以重放录制画面，这被称为擦洗，对于手动分析动画进程很有用。</p>
+<p><img src="/images/demo_7.png" alt="alt 图示"></p>
+<h3 id="Frames部分"><a href="#Frames部分" class="headerlink" title="Frames部分"></a>Frames部分</h3><p>在Frames部分，如果将你的鼠标移动至绿色方块部分，会显示在该特定帧上的FPS值，此例中每帧可能远低于60FPS的目标。的确，在这个例子中，这个页面的性能很差并且能很明显地被观察到，但是在实际场景中，可能并不是那么的容易，所以，要用所有这些工具来进行综合测量。</p>
+<p><img src="/images/demo_8.png" alt="alt 图示"></p>
+<h2 id="寻找瓶颈（追根溯源）"><a href="#寻找瓶颈（追根溯源）" class="headerlink" title="寻找瓶颈（追根溯源）"></a>寻找瓶颈（追根溯源）</h2><p>现在你已经通过上面的各种方式了解并确信了这个网页的性能不好，那么为什么会差呢？是什么导致它运行的这么差的呢？</p>
+<h3 id="Summary-Tab"><a href="#Summary-Tab" class="headerlink" title="Summary Tab"></a>Summary Tab</h3><p>当没有选择任何事件的时候，Summary tab显示了网页进程活动的分类。从图中可以看出，这个网页花费了太多的时间在渲染（rendering）上了。因此，你的目标就是减少渲染工作花费的时间。</p>
+<p><img src="/images/demo_9.png" alt="alt 图示"></p>
+<h3 id="Main部分"><a href="#Main部分" class="headerlink" title="Main部分"></a>Main部分</h3><p>展开Main部分，DevTools将显示主线程上的随着时间推移的活动火焰图。x轴代表随时间推移的记录，每个长条代表一个事件，长条越宽，代表这个事件花费的时间越长。y轴代表调用堆栈，当你看到堆叠在一起的事件时，意味着上层事件发起了下层事件。</p>
+<p><img src="/images/demo_10.png" alt="alt 图示"></p>
+<p>可以通过单击、鼠标滚动或者拖动来选中FPS,CPU或NET图标中的一部分，Main部分和Summary Tab就会只显示选中部分的录制信息。注意<code>Animation Frame Fired</code>事件右上角的红色三角形图标，该红色三角图标是这个事件有问题的警告。</p>
+<p>单击<code>Animation Frame Fired</code>事件,Summary tab会显示该事件相关的信息。</p>
+<p><img src="/images/demo_11.png" alt="alt 图示"></p>
+<p>注意<code>reveal</code>，点击它，会高亮触发<code>Animation Frame Fired</code>事件的事件。</p>
+<p><img src="/images/demo_12.png" alt="alt 图示"></p>
+<p>注意<code>app.js:95</code>,点击它，会跳转到source面板对应的源码及其对应的行号。</p>
+<blockquote>
+<p>当选中了一个事件之后，可以使用键盘上的箭头来选择前面或者后面的事件</p>
+</blockquote>
+<p>在<code>Animation Frame Fired</code>事件下面有一群紫色的事件。如果把它们放宽一点，会看到几乎每个紫色事件的右上角都有红色三角形图标。点击其中一个紫色事件（其实就是Layout事件），Summary tab会显示该事件更详细的信息。确实，这里有一个强制reflow的警告。</p>
+<p><img src="/images/demo_13.png" alt="alt 图示"></p>
+<p>在Summary tab，点击<code>Recalculation Forced</code>下面的<code>app.js:71</code>,DevTools会跳转到触发强制reflow的代码行。</p>
+<p><img src="/images/demo_14.png" alt="alt 图示"></p>
+<p>这个代码的问题在于，在动画的每一帧都改变了蓝色方块的样式并计算了每个方块在页面的位置。因为样式改变了，浏览器却不确定是否是每一个方块的位置都改变了，因此浏览器为了计算方块的位置，只能对方块重新布局。可以查看<a href="https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid_forced_synchronous_layouts" target="_blank" rel="external">Avoid forced synchronous layouts</a>这篇文来了解如何避免大型、复杂的布局和布局抖动。</p>
+<p>更多的时间线事件参考，请点击<a href="https://developers.google.com/web/tools/chrome-devtools/evaluate-performance/performance-reference" target="_blank" rel="external">这里</a></p>
+<h1 id="利用chrome开发者工具执行加载性能评估"><a href="#利用chrome开发者工具执行加载性能评估" class="headerlink" title="利用chrome开发者工具执行加载性能评估"></a>利用chrome开发者工具执行加载性能评估</h1><ol>
+<li>打开你要评估的页面</li>
+<li>打开performance面板</li>
+<li>点击<code>Start profiling and reload page</code>（图中蓝色方框框住部分），DevTools在页面重新加载时记录性能指标，然后在加载完成后几秒钟自动停止录制。</li>
+<li>其他分析方式同上面的运行时性能评估。</li>
+</ol>
+<p><img src="/images/demo_15.png" alt="alt 图示"></p>
+<blockquote>
+<p>如同评估运行时性能一样设置了CPU限制，你也可以在设置里面设置network控制，来调整你想要的网络速度环境。</p>
+</blockquote>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>可以使用chrome浏览器DevTools中的Performance面板来得到网页的加载性能和运行时的性能数据，根据上文介绍的分析方法，结合RAIL模型来评估网页性能的好与差。这是一个很有效的方法。具体如何提高网页的性能呢？这又是一个大课题，相信网上也有不少与之相关的博文可以参考，笔者后续有时间也出相关博文。</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p><a href="https://developers.google.com/web/tools/chrome-devtools/evaluate-performance/" target="_blank" rel="external">Get Started With Analyzing Runtime Performance</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/前端-性能-测试-优化/" rel="tag"># 前端 性能 测试 优化</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/14/从零开始编写一个精简mvvm框架/" rel="next" title="一个只有十行的精简MVVM框架">
+                <i class="fa fa-chevron-left"></i> 一个只有十行的精简MVVM框架
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/11/28/网页性能分析不完全指南/"
+           data-title="网页性能分析不完全指南" data-url="http://yoursite.com/2017/11/28/网页性能分析不完全指南/">
+      </div>
+    
+    <div id="container"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+var gitment = new Gitment({
+  owner: 'mengera88',
+  repo: 'mengera88.github.io',
+  oauth: {
+    client_id: 'd7cbe4a57bd21cf9e226',
+    client_secret: 'c500a92c31b1f17fc147b0e191448accdf310ece',
+  },
+})
+gitment.render('comments')
+</script>
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Jessica" />
+          <p class="site-author-name" itemprop="name">Jessica</p>
+          <p class="site-description motion-element" itemprop="description">前端 node JavaScript 学习 技术杂谈</p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#用RAIL模型评估运行时性能"><span class="nav-number">2.</span> <span class="nav-text">用RAIL模型评估运行时性能</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#以用户为中心"><span class="nav-number">2.1.</span> <span class="nav-text">以用户为中心</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#响应（Response）-在100毫秒以内响应"><span class="nav-number">2.2.</span> <span class="nav-text">响应（Response）: 在100毫秒以内响应</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动画（Animation）-在10毫秒内生成一帧（即达到60fps）"><span class="nav-number">2.3.</span> <span class="nav-text">动画（Animation）: 在10毫秒内生成一帧（即达到60fps）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#空闲（Idle）：最大程度增加空闲时间"><span class="nav-number">2.4.</span> <span class="nav-text">空闲（Idle）：最大程度增加空闲时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#加载（Load）：在1000毫秒以内呈现内容"><span class="nav-number">2.5.</span> <span class="nav-text">加载（Load）：在1000毫秒以内呈现内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关键RAIL指标汇总"><span class="nav-number">2.6.</span> <span class="nav-text">关键RAIL指标汇总</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#利用chrome开发者工具执行运行时性能评估"><span class="nav-number">3.</span> <span class="nav-text">利用chrome开发者工具执行运行时性能评估</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#准备工作"><span class="nav-number">3.1.</span> <span class="nav-text">准备工作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模拟手机CPU"><span class="nav-number">3.2.</span> <span class="nav-text">模拟手机CPU</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置demo"><span class="nav-number">3.3.</span> <span class="nav-text">设置demo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#记录运行性能"><span class="nav-number">3.4.</span> <span class="nav-text">记录运行性能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分析结果"><span class="nav-number">3.5.</span> <span class="nav-text">分析结果</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#FPS图表"><span class="nav-number">3.5.1.</span> <span class="nav-text">FPS图表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CPU图表"><span class="nav-number">3.5.2.</span> <span class="nav-text">CPU图表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Frames部分"><span class="nav-number">3.5.3.</span> <span class="nav-text">Frames部分</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#寻找瓶颈（追根溯源）"><span class="nav-number">3.6.</span> <span class="nav-text">寻找瓶颈（追根溯源）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Summary-Tab"><span class="nav-number">3.6.1.</span> <span class="nav-text">Summary Tab</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Main部分"><span class="nav-number">3.6.2.</span> <span class="nav-text">Main部分</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#利用chrome开发者工具执行加载性能评估"><span class="nav-number">4.</span> <span class="nav-text">利用chrome开发者工具执行加载性能评估</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-number">6.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jessica</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+</br>
+<span id="busuanzi_container_site_pv">
+  Total <span id="busuanzi_value_site_pv"></span> views.
+  您是jessica的第<span id="busuanzi_value_site_uv"></span>个小伙伴
+  <span id="busuanzi_value_page_pv"></span> Hits
+</span>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"mengera88"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
