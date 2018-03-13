@@ -1,0 +1,736 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="前端 javascript 基础," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言众所周知，JavaScript是一门单线程语言，虽然在html5中提出了Web-Worker，但这并未改变JavaScript是单线程这一核心。可看HTML规范中的这段话：
+
+To coordinate events, user interaction, scripts, rendering, networking, and so forth, user agents must use eve">
+<meta property="og:type" content="article">
+<meta property="og:title" content="你不得不知的Event Loop">
+<meta property="og:url" content="http://yoursite.com/2018/03/12/你不得不知的Event-Loop/index.html">
+<meta property="og:site_name" content="前端静径">
+<meta property="og:description" content="前言众所周知，JavaScript是一门单线程语言，虽然在html5中提出了Web-Worker，但这并未改变JavaScript是单线程这一核心。可看HTML规范中的这段话：
+
+To coordinate events, user interaction, scripts, rendering, networking, and so forth, user agents must use eve">
+<meta property="og:image" content="http://yoursite.com/images/EventQueue1.png">
+<meta property="og:image" content="http://yoursite.com/images/eventqueue2.png">
+<meta property="og:image" content="http://yoursite.com/images/eventqueue3.png">
+<meta property="og:updated_time" content="2018-03-13T07:32:15.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="你不得不知的Event Loop">
+<meta name="twitter:description" content="前言众所周知，JavaScript是一门单线程语言，虽然在html5中提出了Web-Worker，但这并未改变JavaScript是单线程这一核心。可看HTML规范中的这段话：
+
+To coordinate events, user interaction, scripts, rendering, networking, and so forth, user agents must use eve">
+<meta name="twitter:image" content="http://yoursite.com/images/EventQueue1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/03/12/你不得不知的Event-Loop/"/>
+
+
+
+
+
+  <title> 你不得不知的Event Loop | 前端静径 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">前端静径</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle">前端成长足迹</p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/12/你不得不知的Event-Loop/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Jessica">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.gif">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="前端静径">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="前端静径" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                你不得不知的Event Loop
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-12T11:03:00+08:00">
+                2018-03-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/03/12/你不得不知的Event-Loop/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/03/12/你不得不知的Event-Loop/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>众所周知，JavaScript是一门<strong>单线程</strong>语言，虽然在html5中提出了Web-Worker，但这并未改变JavaScript是单线程这一核心。可看<a href="https://www.w3.org/TR/html5/webappapis.html#event-loops" target="_blank" rel="external">HTML规范</a>中的这段话：</p>
+<blockquote>
+<p>To coordinate events, user interaction, scripts, rendering, networking, and so forth, user agents must use event loops as described in this section. There are two kinds of event loops: those for browsing contexts, and those for workers.</p>
+</blockquote>
+<p>为了协调事件、用户交互、脚本、UI 渲染和网络处理等行为，用户引擎必须使用event loops。Event Loop包含两类：一类是基于Browsing Context，一种是基于Worker，二者是独立运行的。<br>下面本文用一个例子，着重讲解下基于Browsing Context的事件循环机制。</p>
+<p>来看下面这段JavaScript代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">console</span>.log(<span class="string">'script start'</span>);</div><div class="line"></div><div class="line">setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="built_in">console</span>.log(<span class="string">'setTimeout'</span>);</div><div class="line">&#125;, <span class="number">0</span>);</div><div class="line"></div><div class="line"><span class="built_in">Promise</span>.resolve().then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="built_in">console</span>.log(<span class="string">'promise1'</span>);</div><div class="line">&#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="built_in">console</span>.log(<span class="string">'promise2'</span>);</div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="built_in">console</span>.log(<span class="string">'script end'</span>);</div></pre></td></tr></table></figure>
+<p>先猜测一下这段代码的输出顺序是什么，再去浏览器控制台输入一下，看看实际输出的顺序和你猜测出的顺序是否一致，如果一致，那就说明，你对JavaScript的事件循环机制还是有一定了解的，继续往下看可以巩固下你的知识；而如果实际输出的顺序和你的猜测不一致，那么本文下面的部分会为你答疑解惑。</p>
+<h1 id="任务队列"><a href="#任务队列" class="headerlink" title="任务队列"></a>任务队列</h1><p>所有的任务可以分为同步任务和异步任务，同步任务，顾名思义，就是立即执行的任务，同步任务一般会直接进入到主线程中执行；而异步任务，就是异步执行的任务，比如ajax网络请求，setTimeout定时函数等都属于异步任务，异步任务会通过任务队列(Event Queue)的机制来进行协调。具体的可以用下面的图来大致说明一下：</p>
+<p><img src="/images/EventQueue1.png" alt="alt Event Queue示意图"></p>
+<p>同步和异步任务分别进入不同的执行环境，同步的进入主线程，即主执行栈，异步的进入Event Queue。主线程内的任务执行完毕为空，会去Event Queue读取对应的任务，推入主线程执行。<br>上述过程的不断重复就是我们说的Event Loop(事件循环)。</p>
+<p>在事件循环中，每进行一次循环操作称为tick，通过阅读<a href="https://www.w3.org/TR/html5/webappapis.html#event-loops-processing-model" target="_blank" rel="external">规范</a>可知，每一次tick的任务处理模型是比较复杂的，其关键的步骤可以总结如下：</p>
+<ol>
+<li>在此次tick中选择最先进入队列的任务(oldest task)，如果有则执行(一次)</li>
+<li>检查是否存在Microtasks，如果存在则不停地执行，直至清空Microtask Queue</li>
+<li>更新render</li>
+<li>主线程重复执行上述步骤</li>
+</ol>
+<p>可以用一张图来说明下流程：<br><img src="/images/eventqueue2.png" alt="alt Event Queue示意图"></p>
+<p>这里相信有人会想问，什么是microtasks?规范中规定，task分为两大类, 分别是Macro Task （宏任务）和Micro Task（微任务）, 并且每个宏任务结束后, 都要清空所有的微任务,这里的Macro Task也是我们常说的task，有些文章并没有对其做区分，后面文章中所提及的task皆看做宏任务(macro task)。</p>
+<p>(macro)task主要包含：script(整体代码)、setTimeout、setInterval、I/O、UI交互事件、setImmediate(Node.js 环境)</p>
+<p>microtask主要包含：Promise、MutaionObserver、process.nextTick(Node.js 环境)</p>
+<p>setTimeout/Promise等API便是任务源，而进入任务队列的是由他们指定的具体执行任务。来自不同任务源的任务会进入到不同的任务队列。其中setTimeout与setInterval是同源的。</p>
+<h1 id="分析示例代码"><a href="#分析示例代码" class="headerlink" title="分析示例代码"></a>分析示例代码</h1><p>千言万语，不如就着例子讲来的清楚。下面我们可以按照规范，一步步执行解析下上面的例子，先贴一下例子代码（免得你往上翻）。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">console</span>.log(<span class="string">'script start'</span>);</div><div class="line"></div><div class="line">setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="built_in">console</span>.log(<span class="string">'setTimeout'</span>);</div><div class="line">&#125;, <span class="number">0</span>);</div><div class="line"></div><div class="line"><span class="built_in">Promise</span>.resolve().then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="built_in">console</span>.log(<span class="string">'promise1'</span>);</div><div class="line">&#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="built_in">console</span>.log(<span class="string">'promise2'</span>);</div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="built_in">console</span>.log(<span class="string">'script end'</span>);</div></pre></td></tr></table></figure>
+<ol>
+<li>整体script作为第一个宏任务进入主线程，遇到console.log，输出<code>script start</code></li>
+<li>遇到setTimeout，其回调函数被分发到宏任务Event Queue中</li>
+<li>遇到Promise，其then函数被分到到微任务Event Queue中,记为then1，之后又遇到了then函数，将其分到微任务Event Queue中，记为then2</li>
+<li>遇到console.log，输出<code>script end</code></li>
+</ol>
+<p>至此，Event Queue中存在三个任务，如下表：</p>
+<table>
+<thead>
+<tr>
+<th>宏任务</th>
+<th>微任务  </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>setTimeout</td>
+<td>then1  </td>
+</tr>
+<tr>
+<td></td>
+<td>then2</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>执行微任务，首先执行then1，输出<code>promise1</code>,然后执行then2，输出<code>promise2</code>，这样就清空了所有微任务</li>
+<li>执行setTimeout任务，输出<code>setTimeout</code><br>至此，输出的顺序是：<code>script start, script end, promise1, promise2, setTimeout</code></li>
+</ol>
+<p>so，你猜对了吗？</p>
+<h1 id="看看你掌握了没"><a href="#看看你掌握了没" class="headerlink" title="看看你掌握了没"></a>看看你掌握了没</h1><p>再来一个题目，来做个练习：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">console</span>.log(<span class="string">'script start'</span>);</div><div class="line"></div><div class="line">setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="built_in">console</span>.log(<span class="string">'timeout1'</span>);</div><div class="line">&#125;, <span class="number">10</span>);</div><div class="line"></div><div class="line"><span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="params">resolve</span> =&gt;</span> &#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'promise1'</span>);</div><div class="line">    resolve();</div><div class="line">    setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> <span class="built_in">console</span>.log(<span class="string">'timeout2'</span>), <span class="number">10</span>);</div><div class="line">&#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'then1'</span>)</div><div class="line">&#125;)</div><div class="line"></div><div class="line"><span class="built_in">console</span>.log(<span class="string">'script end'</span>);</div></pre></td></tr></table></figure>
+<p>这个题目就稍微有点复杂了，我们再分析下：</p>
+<p>首先，事件循环从宏任务(macrotask)队列开始，最初始，宏任务队列中，只有一个script(整体代码)任务；当遇到任务源(task source)时，则会先分发任务到对应的任务队列中去。所以，就和上面例子类似，首先遇到了console.log，输出<code>script start</code>；<br>接着往下走，遇到setTimeout任务源，将其分发到任务队列中去，记为timeout1；<br>接着遇到promise，new promise中的代码立即执行，输出<code>promise1</code>,然后执行resolve,遇到setTimeout,将其分发到任务队列中去，记为timemout2,将其then分发到微任务队列中去，记为then1；<br>接着遇到console.log代码，直接输出<code>script end</code><br>接着检查微任务队列，发现有个then1微任务，执行，输出<code>then1</code><br>再检查微任务队列，发现已经清空，则开始检查宏任务队列，执行timeout1,输出<code>timeout1</code>；<br>接着执行timeout2，输出<code>timeout2</code><br>至此，所有的都队列都已清空，执行完毕。其输出的顺序依次是：<code>script start</code>, <code>promise1</code>, <code>script end</code>, <code>then1</code>, <code>timeout1</code>, <code>timeout2</code></p>
+<p>用流程图看更清晰：</p>
+<p><img src="/images/eventqueue3.png" alt="alt Event Queue示意图"></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>有个小tip：从规范来看，microtask优先于task执行，所以如果有需要优先执行的逻辑，放入microtask队列会比task更早的被执行。</p>
+<p>最后的最后，记住，JavaScript是一门单线程语言。</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p><a href="https://juejin.im/post/59e85eebf265da430d571f89" target="_blank" rel="external">这一次，彻底弄懂 JavaScript 执行机制</a><br><a href="https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/" target="_blank" rel="external">Tasks, microtasks, queues and schedules</a><br><a href="https://github.com/dwqs/blog/issues/61" target="_blank" rel="external">从一道题浅说 JavaScript 的事件循环</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/前端-javascript-基础/" rel="tag"># 前端 javascript 基础</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/28/网页性能分析不完全指南/" rel="next" title="网页性能分析不完全指南">
+                <i class="fa fa-chevron-left"></i> 网页性能分析不完全指南
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2018/03/12/你不得不知的Event-Loop/"
+           data-title="你不得不知的Event Loop" data-url="http://yoursite.com/2018/03/12/你不得不知的Event-Loop/">
+      </div>
+    
+    <div id="container"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+var gitment = new Gitment({
+  owner: 'mengera88',
+  repo: 'mengera88.github.io',
+  oauth: {
+    client_id: 'd7cbe4a57bd21cf9e226',
+    client_secret: 'c500a92c31b1f17fc147b0e191448accdf310ece',
+  },
+})
+gitment.render('comments')
+</script>
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Jessica" />
+          <p class="site-author-name" itemprop="name">Jessica</p>
+          <p class="site-description motion-element" itemprop="description">前端 node JavaScript 学习 技术杂谈</p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#任务队列"><span class="nav-number">2.</span> <span class="nav-text">任务队列</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分析示例代码"><span class="nav-number">3.</span> <span class="nav-text">分析示例代码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#看看你掌握了没"><span class="nav-number">4.</span> <span class="nav-text">看看你掌握了没</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-number">6.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jessica</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+</br>
+<span id="busuanzi_container_site_pv">
+  Total <span id="busuanzi_value_site_pv"></span> views.
+  您是jessica的第<span id="busuanzi_value_site_uv"></span>个小伙伴
+  <span id="busuanzi_value_page_pv"></span> Hits
+</span>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"mengera88"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
