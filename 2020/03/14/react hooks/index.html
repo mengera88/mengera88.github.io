@@ -1,0 +1,768 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="前端" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言React Hook是React16.8.0版本之后提出的新增特性，由于之前的项目都不怎么用到React，因此也就匆匆了解一下，最近因为换工作，主要技术栈变为React了，所以需要着重研究一下React的一些特性以更好地应用到项目开发中和更好地进行知识沉淀。
+Hook是什么在解释这个问题之前，可以先看一段代码：12345678910111213141516171819import React,">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React Hook 不完全指南">
+<meta property="og:url" content="http://yoursite.com/2020/03/14/react hooks/index.html">
+<meta property="og:site_name" content="前端静径">
+<meta property="og:description" content="前言React Hook是React16.8.0版本之后提出的新增特性，由于之前的项目都不怎么用到React，因此也就匆匆了解一下，最近因为换工作，主要技术栈变为React了，所以需要着重研究一下React的一些特性以更好地应用到项目开发中和更好地进行知识沉淀。
+Hook是什么在解释这个问题之前，可以先看一段代码：12345678910111213141516171819import React,">
+<meta property="og:updated_time" content="2020-03-16T12:50:38.270Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="React Hook 不完全指南">
+<meta name="twitter:description" content="前言React Hook是React16.8.0版本之后提出的新增特性，由于之前的项目都不怎么用到React，因此也就匆匆了解一下，最近因为换工作，主要技术栈变为React了，所以需要着重研究一下React的一些特性以更好地应用到项目开发中和更好地进行知识沉淀。
+Hook是什么在解释这个问题之前，可以先看一段代码：12345678910111213141516171819import React,">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/03/14/react hooks/"/>
+
+
+
+
+
+  <title> React Hook 不完全指南 | 前端静径 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">前端静径</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle">前端成长足迹</p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/14/react hooks/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Jessica">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.gif">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="前端静径">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="前端静径" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                React Hook 不完全指南
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-03-14T16:45:31+08:00">
+                2020-03-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/03/14/react hooks/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2020/03/14/react hooks/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p><code>React Hook</code>是<code>React16.8.0</code>版本之后提出的新增特性，由于之前的项目都不怎么用到<code>React</code>，因此也就匆匆了解一下，最近因为换工作，主要技术栈变为<code>React</code>了，所以需要着重研究一下<code>React</code>的一些特性以更好地应用到项目开发中和更好地进行知识沉淀。</p>
+<h1 id="Hook是什么"><a href="#Hook是什么" class="headerlink" title="Hook是什么"></a>Hook是什么</h1><p>在解释这个问题之前，可以先看一段代码：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> React, &#123; useState &#125; <span class="keyword">from</span> <span class="string">'react'</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Example</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="comment">// 声明一个叫 "count" 的 state 变量</span></div><div class="line">    <span class="keyword">const</span> [count, setCount] = useState(<span class="number">0</span>)</div><div class="line">    <span class="comment">// 与 componentDidMount and componentDidUpdate效果类似</span></div><div class="line">    useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</div><div class="line">        <span class="comment">// Update the document title using the browser API</span></div><div class="line">        <span class="built_in">document</span>.title = <span class="string">`You clicked <span class="subst">$&#123;count&#125;</span> times`</span></div><div class="line">    &#125;)</div><div class="line"></div><div class="line">    <span class="keyword">return</span> (</div><div class="line">        <span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span></div><div class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>You clicked &#123;count&#125; times<span class="tag">&lt;/<span class="name">p</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">button</span> <span class="attr">onClick</span>=<span class="string">&#123;()</span> =&gt;</span> setCount(count + 1)&#125;&gt;</div><div class="line">            Click me</div><div class="line">        <span class="tag">&lt;/<span class="name">button</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">    );</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><code>Hook</code>是一个特殊的函数，它可以让你“钩入”<code>React</code>的特性。例如，<code>useState</code>是允许你在<code>React</code>函数组件中添加<code>state</code>的<code>Hook</code>。如果你在编写函数组件并意识到需要向其添加一些<code>state</code>，以前的做法是必须将其它转化为<code>class</code>。现在你可以在现有的函数组件中使用<code>Hook</code>;又例如<code>useEffect Hook</code>可以告诉<code>React</code>组件需要在渲染后执行某些操作，<code>React</code>会保存你传递的函数（我们将它称之为 “effect”），并且在执行 DOM 更新之后调用它，可以把它看做<code>componentDidMount</code>，<code>componentDidUpdate</code>和<code>componentWillUnmount</code>这三个函数的组合。</p>
+<blockquote>
+<p>官方解释：Hook 是 React 16.8 的新增特性。它可以让你在不编写 class 的情况下使用 state 以及其他的 React 特性。</p>
+</blockquote>
+<h1 id="为什么要提出React-Hook"><a href="#为什么要提出React-Hook" class="headerlink" title="为什么要提出React Hook"></a>为什么要提出React Hook</h1><h3 id="在组件之间复用状态逻辑很难"><a href="#在组件之间复用状态逻辑很难" class="headerlink" title="在组件之间复用状态逻辑很难"></a>在组件之间复用状态逻辑很难</h3><blockquote>
+<p><code>React</code>没有提供将可复用性行为“附加”到组件的途径（例如，把组件连接到<code>store</code>）。如果你使用过<code>React</code>一段时间，你也许会熟悉一些解决此类问题的方案，比如<code>render props</code>和<code>高阶组件</code>。但是这类方案需要重新组织你的组件结构，这可能会很麻烦，使你的代码难以理解。如果你在<code>React DevTools</code>中观察过<code>React</code>应用，你会发现由 <code>providers，consumers，高阶组件，render props</code>等其他抽象层组成的组件会形成“嵌套地狱”。尽管我们可以在<code>DevTools</code>过滤掉它们，但这说明了一个更深层次的问题：<code>React</code>需要为共享状态逻辑提供更好的原生途径。</p>
+</blockquote>
+<p><code>Hook</code>可以在无需修改组件结构的情况下复用状态逻辑，这使得在组件间或社区内共享<code>Hook</code>变得更便捷</p>
+<h3 id="复杂组件变得难以理解"><a href="#复杂组件变得难以理解" class="headerlink" title="复杂组件变得难以理解"></a>复杂组件变得难以理解</h3><p>我们经常维护一些组件，组件起初很简单，但随着业务复杂度的提升，组件逐渐会变得比较复杂，使得每个生命周期常常包含一些不相关的逻辑。例如，组件常常在<code>componentDidMount</code>和<code>componentDidUpdate</code>中获取数据。但是，同一个<code>componentDidMount</code>中可能也包含很多其它的逻辑，如设置事件监听，而之后需在<code>componentWillUnmount</code>中清除。相互关联且需要对照修改的代码被进行了拆分，而完全不相关的代码却在同一个方法中组合在一起,如此很容易产生<code>bug</code>，并且导致逻辑不一致,维护起来也会显得比较吃力。</p>
+<p>为了解决这个问题，<code>Hook</code>将组件中相互关联的部分拆分成更小的函数（比如设置订阅或请求数据），而并非强制按照生命周期划分。你还可以使用<code>reducer</code>来管理组件的内部状态，使其更加可预测。</p>
+<h3 id="难以理解的-class"><a href="#难以理解的-class" class="headerlink" title="难以理解的 class"></a>难以理解的 class</h3><p>引用官方的话：</p>
+<blockquote>
+<p>除了代码复用和代码管理会遇到困难外，我们还发现<code>class</code>是学习<code>React</code>的一大屏障。你必须去理解<code>JavaScript</code>中<code>this</code>的工作方式，这与其他语言存在巨大差异。还不能忘记绑定事件处理器。没有稳定的语法提案，这些代码非常冗余。大家可以很好地理解<code>props</code>，<code>state</code>和自顶向下的数据流，但对<code>class</code>却一筹莫展。即便在有经验的<code>React</code>开发者之间，对于函数组件与<code>class</code>组件的差异也存在分歧，甚至还要区分两种组件的使用场景。</p>
+<p>另外，<code>React</code>已经发布五年了，我们希望它能在下一个五年也与时俱进。就像<code>Svelte</code>，<code>Angular</code>，<code>Glimmer</code>等其它的库展示的那样，组件预编译会带来巨大的潜力。尤其是在它不局限于模板的时候。最近，我们一直在使用<code>Prepack</code>来试验<code>component folding</code>，也取得了初步成效。但是我们发现使用<code>class</code>组件会无意中鼓励开发者使用一些让优化措施无效的方案。<code>class</code>也给目前的工具带来了一些问题。例如，<code>class</code>不能很好的压缩，并且会使热重载出现不稳定的情况。因此，我们想提供一个使代码更易于优化的<code>API</code>。</p>
+</blockquote>
+<p><code>Hook</code>能够在非<code>class</code>的情况下使用更多的<code>React</code>特性。 其实, <code>React</code>组件一直更像是函数。而<code>Hook</code>则拥抱了函数，同时也没有牺牲<code>React</code>的精神原则。<code>Hook</code>提供了问题的解决方案，无需学习复杂的函数式或响应式编程技术。</p>
+<p><strong>最重要的是，<code>Hook</code>是向下兼容的，它和现有代码可以同时工作，你可以渐进式地使用他们，不用急着迁移到<code>Hook</code>。</strong></p>
+<h1 id="内置常用HOOK概览"><a href="#内置常用HOOK概览" class="headerlink" title="内置常用HOOK概览"></a>内置常用<code>HOOK</code>概览</h1><h2 id="React中内置的Hook-API"><a href="#React中内置的Hook-API" class="headerlink" title="React中内置的Hook API"></a>React中内置的Hook API</h2><ul>
+<li><p>基础Hook</p>
+<ul>
+<li>useState</li>
+<li>useEffect</li>
+<li>useContext</li>
+</ul>
+</li>
+<li><p>额外的Hook</p>
+<ul>
+<li>useReducer</li>
+<li>useCallback</li>
+<li>useMemo</li>
+<li>useRef</li>
+<li>useImperativeHandle</li>
+<li>useLayoutEffect</li>
+<li>useDebugValue</li>
+</ul>
+</li>
+</ul>
+<h2 id="State-Hook"><a href="#State-Hook" class="headerlink" title="State Hook"></a>State Hook</h2><p>可以看下面的代码：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> React, &#123; useState &#125; <span class="keyword">from</span> <span class="string">"react"</span>;</div><div class="line"><span class="keyword">import</span> <span class="string">"./styles.css"</span>;</div><div class="line"></div><div class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="function"><span class="keyword">function</span> <span class="title">App</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="keyword">const</span> [count, setCount] = useState(<span class="number">0</span>);</div><div class="line">  <span class="keyword">return</span> (</div><div class="line">    <span class="xml"><span class="tag">&lt;<span class="name">div</span> <span class="attr">className</span>=<span class="string">"App"</span>&gt;</span></span></div><div class="line">      <span class="tag">&lt;<span class="name">h1</span>&gt;</span>这是一个示例<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">div</span>&gt;</span>点击了&#123;count&#125;次<span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">button</span></span></div><div class="line">        <span class="attr">onClick</span>=<span class="string">&#123;()</span> =&gt; &#123;</div><div class="line">          setCount(count + 1);</div><div class="line">        &#125;&#125;</div><div class="line">      &gt;</div><div class="line">        点击</div><div class="line">      <span class="tag">&lt;/<span class="name">button</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">button</span></span></div><div class="line">        <span class="attr">onClick</span>=<span class="string">&#123;()</span> =&gt; &#123;</div><div class="line">          setCount(0);</div><div class="line">        &#125;&#125;</div><div class="line">      &gt;</div><div class="line">        清除</div><div class="line">      <span class="tag">&lt;/<span class="name">button</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">  );</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上述代码中，<code>useState</code>就是一个<code>Hook</code>。通过在函数组件里调用它来给组件添加一些内部<code>state</code>。<code>React</code>会在重复渲染时保留这个<code>state</code>。<code>useState</code>会返回一对值：当前状态和一个让你更新它的函数，你可以在事件处理函数中或其他一些地方调用这个函数。它类似<code>class</code>组件的<code>this.setState</code>，但是它不会把新的<code>state</code>和旧的<code>state</code>进行合并。</p>
+<p><code>useState</code>唯一的参数就是初始<code>state</code>。在上面的例子中，我们的计数器是从零开始的，所以初始<code>state</code>就是<code>0</code>。值得注意的是，不同于<code>this.state</code>，这里的<code>state</code>不一定要是一个对象，但如果你有需要，它也可以是。这个初始<code>state</code>参数只有在第一次渲染时会被用到。</p>
+<p>你也可以在函数组件中多次使用<code>state Hook</code>。</p>
+<h3 id="调用-useState-方法的时候做了什么"><a href="#调用-useState-方法的时候做了什么" class="headerlink" title="调用 useState 方法的时候做了什么?"></a>调用 useState 方法的时候做了什么?</h3><p>它定义一个 “state 变量”。在上面的示例中该变量叫<code>count</code>， 但它可以是任意的变量名，比如<code>banana</code>。这是一种在函数调用时保存变量的方式，<code>useState</code>是一种新方法，它与<code>class</code>里面的<code>this.state</code>提供的功能完全相同。一般来说，在函数退出后变量就会”消失”，而<code>state</code>中的变量会被<code>React</code>保留。</p>
+<h3 id="useState-需要哪些参数？"><a href="#useState-需要哪些参数？" class="headerlink" title="useState 需要哪些参数？"></a>useState 需要哪些参数？</h3><p><code>useState()</code>方法里面唯一的参数就是初始<code>state</code>。不同于<code>class</code>的是，我们可以按照需要使用数字或字符串对其进行赋值，而不一定是对象。在示例中，只需使用数字来记录用户点击次数，所以我们传了<code>0</code> 作为变量的初始<code>state</code>。（如果我们想要在<code>state</code>中存储两个不同的变量，只需调用<code>useState()</code>两次即可。）</p>
+<h3 id="useState-方法的返回值是什么？"><a href="#useState-方法的返回值是什么？" class="headerlink" title="useState 方法的返回值是什么？"></a>useState 方法的返回值是什么？</h3><p>返回值为：当前<code>state</code>以及更新<code>state</code>的函数。这就是我们写 <code>const [count, setCount] = useState()</code> 的原因。这与<code>class</code>里面<code>this.state.count</code>和<code>this.setState</code>类似，唯一区别就是你需要成对的获取它们。</p>
+<h3 id="继续深入"><a href="#继续深入" class="headerlink" title="继续深入"></a>继续深入</h3><h4 id="每一次渲染都有它自己的props和state"><a href="#每一次渲染都有它自己的props和state" class="headerlink" title="每一次渲染都有它自己的props和state"></a>每一次渲染都有它自己的props和state</h4><p>我们直接看代码来方便理解：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Counter</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="keyword">const</span> [count, setCount] = useState(<span class="number">0</span>);</div><div class="line"></div><div class="line">  <span class="keyword">return</span> (</div><div class="line">    <span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span></div><div class="line">      <span class="tag">&lt;<span class="name">p</span>&gt;</span>You clicked &#123;count&#125; times<span class="tag">&lt;/<span class="name">p</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">button</span> <span class="attr">onClick</span>=<span class="string">&#123;()</span> =&gt;</span> setCount(count + 1)&#125;&gt;</div><div class="line">        Click me</div><div class="line">      <span class="tag">&lt;/<span class="name">button</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">  );</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>&lt;p&gt;You clicked {count} times&lt;/p&gt;</code>看到这段代码，有一定经验的人可能会想，这其中的原理是不是通过<code>watcher</code>，或者是<code>data binding</code>或者是<code>proxy</code>来实现的呢？都不是，count仅仅只是一个数字类型的变量而已，不是上述中的任何一个，就像下面的普通的变量赋值一样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> count = <span class="number">42</span>;</div><div class="line"><span class="comment">// ...</span></div><div class="line">&lt;p&gt;You clicked &#123;count&#125; times&lt;<span class="regexp">/p&gt;</span></div></pre></td></tr></table></figure>
+<p>组件在第一次渲染的时候，从<code>useState()</code>拿到<code>count</code>的初始值<code>0</code>。当我们调用<code>setCount(1)</code>，<code>React</code>会再次渲染组件，这一次<code>count</code>是<code>1</code>。就如同下面示例的一样：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">// During first render</div><div class="line">function Counter() &#123;</div><div class="line">  const count = 0; // Returned by useState()</div><div class="line">  // ...</div><div class="line">  &lt;p&gt;You clicked &#123;count&#125; times&lt;/p&gt;</div><div class="line">  // ...</div><div class="line">&#125;</div><div class="line"></div><div class="line">// After a click, our function is called again</div><div class="line">function Counter() &#123;</div><div class="line">  const count = 1; // Returned by useState()</div><div class="line">  // ...</div><div class="line">  &lt;p&gt;You clicked &#123;count&#125; times&lt;/p&gt;</div><div class="line">  // ...</div><div class="line">&#125;</div><div class="line"></div><div class="line">// After another click, our function is called again</div><div class="line">function Counter() &#123;</div><div class="line">  const count = 2; // Returned by useState()</div><div class="line">  // ...</div><div class="line">  &lt;p&gt;You clicked &#123;count&#125; times&lt;/p&gt;</div><div class="line">  // ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>当我们更新状态的时候，<code>React</code>会重新渲染组件。每一次渲染都能拿到独立的<code>count</code>状态，这个状态值是函数中的一个常量</strong></p>
+<p>所以下面的这行代码没有做任何特殊的数据绑定：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;p&gt;You clicked &#123;count&#125; times&lt;<span class="regexp">/p&gt;</span></div></pre></td></tr></table></figure>
+<p><strong>它仅仅只是在渲染输出中插入了<code>count</code>这个数字</strong>。这个数字由<code>React</code>提供。当<code>setCount</code>的时候，<code>React</code>会带着一个不同的<code>count</code>值再次调用组件。然后，<code>React</code>会更新<code>DOM</code>以保持和渲染输出一致。</p>
+<p>这里关键的点在于任意一次渲染中的<code>count</code>常量都不会随着时间改变。渲染输出会变是因为我们的组件被一次次调用，而每一次调用引起的渲染中，它包含的<code>count</code>值独立于其他渲染。</p>
+<h2 id="Effect-Hook"><a href="#Effect-Hook" class="headerlink" title="Effect Hook"></a>Effect Hook</h2><p>什么是副作用？<code>React</code>官网是这么定义的：</p>
+<blockquote>
+<p>你之前可能已经在<code>React</code>组件中执行过数据获取、订阅或者手动修改过<code>DOM</code>。我们统一把这些操作称为“副作用”，或者简称为“作用”。</p>
+</blockquote>
+<p><code>useEffect</code>就是一个<code>Effect Hook</code>，给函数组件增加了操作副作用的能力。它跟<code>class</code>组件中的 <code>componentDidMount</code>、<code>componentDidUpdate</code>和<code>componentWillUnmount</code>具有相同的用途，只不过被合并成了一个<code>API</code>。</p>
+<p>例如，下面这个组件在<code>React</code>更新<code>DOM</code>后会设置一个页面标题：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> React, &#123; useState, useEffect &#125; <span class="keyword">from</span> <span class="string">'react'</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Example</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="keyword">const</span> [count, setCount] = useState(<span class="number">0</span>);</div><div class="line"></div><div class="line">  <span class="comment">// 相当于 componentDidMount 和 componentDidUpdate:</span></div><div class="line">  useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</div><div class="line">    <span class="comment">// 使用浏览器的 API 更新页面标题</span></div><div class="line">    <span class="built_in">document</span>.title = <span class="string">`You clicked <span class="subst">$&#123;count&#125;</span> times`</span>;</div><div class="line">  &#125;);</div><div class="line"></div><div class="line">  <span class="keyword">return</span> (</div><div class="line">    <span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span></div><div class="line">      <span class="tag">&lt;<span class="name">p</span>&gt;</span>You clicked &#123;count&#125; times<span class="tag">&lt;/<span class="name">p</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">button</span> <span class="attr">onClick</span>=<span class="string">&#123;()</span> =&gt;</span> setCount(count + 1)&#125;&gt;</div><div class="line">        Click me</div><div class="line">      <span class="tag">&lt;/<span class="name">button</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">  );</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>当你调用<code>useEffect</code>时，就是在告诉<code>React</code>在完成对<code>DOM</code>的更改后运行你的“副作用”函数。由于副作用函数是在组件内声明的，所以它们可以访问到组件的<code>props</code>和<code>state</code>。默认情况下，<code>React</code>会在每次渲染后调用副作用函数，包括第一次渲染的时候。</p>
+<p>副作用函数还可以通过返回一个函数来指定如何“清除”副作用。例如，在下面的组件中使用副作用函数来订阅好友的在线状态，并通过取消订阅来进行清除操作：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> React, &#123; useState, useEffect &#125; <span class="keyword">from</span> <span class="string">'react'</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">FriendStatus</span>(<span class="params">props</span>) </span>&#123;</div><div class="line">  <span class="keyword">const</span> [isOnline, setIsOnline] = useState(<span class="literal">null</span>);</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">function</span> <span class="title">handleStatusChange</span>(<span class="params">status</span>) </span>&#123;</div><div class="line">    setIsOnline(status.isOnline);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</div><div class="line">    ChatAPI.subscribeToFriendStatus(props.friend.id, handleStatusChange);</div><div class="line"></div><div class="line">    <span class="keyword">return</span> <span class="function"><span class="params">()</span> =&gt;</span> &#123;</div><div class="line">      ChatAPI.unsubscribeFromFriendStatus(props.friend.id, handleStatusChange);</div><div class="line">    &#125;;</div><div class="line">  &#125;);</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (isOnline === <span class="literal">null</span>) &#123;</div><div class="line">    <span class="keyword">return</span> <span class="string">'Loading...'</span>;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">return</span> isOnline ? <span class="string">'Online'</span> : <span class="string">'Offline'</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在这个示例中，<code>React</code>会在组件销毁时取消对<code>ChatAPI</code>的订阅，然后在后续渲染时重新执行副作用函数。</p>
+<p>跟<code>useState</code>一样，你可以在组件中多次使用<code>useEffect</code>。通过使用<code>Hook</code>，你可以把组件内相关的副作用组织在一起（例如创建订阅及取消订阅），而不要把它们拆分到不同的生命周期函数里。这样就有利于你对代码的维护。也再一次说明了<code>React</code>官方为什么会使用<code>Hook</code>。</p>
+<h3 id="深入"><a href="#深入" class="headerlink" title="深入"></a>深入</h3><h4 id="每次渲染都有它自己的Effects"><a href="#每次渲染都有它自己的Effects" class="headerlink" title="每次渲染都有它自己的Effects"></a>每次渲染都有它自己的Effects</h4><p>再次看到官网文档中的例子：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Counter</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="keyword">const</span> [count, setCount] = useState(<span class="number">0</span>);</div><div class="line"></div><div class="line">  useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</div><div class="line">    <span class="built_in">document</span>.title = <span class="string">`You clicked <span class="subst">$&#123;count&#125;</span> times`</span>;</div><div class="line">  &#125;);</div><div class="line"></div><div class="line">  <span class="keyword">return</span> (</div><div class="line">    <span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span></div><div class="line">      <span class="tag">&lt;<span class="name">p</span>&gt;</span>You clicked &#123;count&#125; times<span class="tag">&lt;/<span class="name">p</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">button</span> <span class="attr">onClick</span>=<span class="string">&#123;()</span> =&gt;</span> setCount(count + 1)&#125;&gt;</div><div class="line">        Click me</div><div class="line">      <span class="tag">&lt;/<span class="name">button</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">  );</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>那么：<strong>effect是如何读取到最新的<code>count</code>状态值的呢？</strong></p>
+<p>也许，是某种<code>data binding</code>或<code>watching</code>机制使得<code>count</code>能够在<code>effect</code>函数内更新？也或许<code>count</code>是一个可变的值，<code>React</code>会在我们组件内部修改它以使我们的<code>effect</code>函数总能拿到最新的值？</p>
+<p>都不是。</p>
+<p>我们已经知道count是某个特定渲染中的常量。事件处理函数“看到”的是属于它那次特定渲染中的<code>count</code>状态值。对于<code>effects</code>也同样如此：</p>
+<p><strong>并不是count的值在“不变”的<code>effect</code>中发生了改变，而是<code>effect</code>函数本身在每一次渲染中都不相同。</strong></p>
+<p>每一个<code>effect</code>版本“看到”的<code>count</code>值都来自于它属于的那次渲染：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// During first render</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Counter</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="comment">// ...</span></div><div class="line">  useEffect(</div><div class="line">    <span class="comment">// Effect function from first render</span></div><div class="line">    () =&gt; &#123;</div><div class="line">      <span class="built_in">document</span>.title = <span class="string">`You clicked <span class="subst">$&#123;<span class="number">0</span>&#125;</span> times`</span>;</div><div class="line">    &#125;</div><div class="line">  );</div><div class="line">  <span class="comment">// ...</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// After a click, our function is called again</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Counter</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="comment">// ...</span></div><div class="line">  useEffect(</div><div class="line">    <span class="comment">// Effect function from second render</span></div><div class="line">    () =&gt; &#123;</div><div class="line">      <span class="built_in">document</span>.title = <span class="string">`You clicked <span class="subst">$&#123;<span class="number">1</span>&#125;</span> times`</span>;</div><div class="line">    &#125;</div><div class="line">  );</div><div class="line">  <span class="comment">// ...</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// After another click, our function is called again</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Counter</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="comment">// ...</span></div><div class="line">  useEffect(</div><div class="line">    <span class="comment">// Effect function from third render</span></div><div class="line">    () =&gt; &#123;</div><div class="line">      <span class="built_in">document</span>.title = <span class="string">`You clicked <span class="subst">$&#123;<span class="number">2</span>&#125;</span> times`</span>;</div><div class="line">    &#125;</div><div class="line">  );</div><div class="line">  <span class="comment">// ..</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>React</code>会记住你提供的<code>effect</code>函数，并且会在每次更改作用于<code>DOM</code>并让浏览器绘制屏幕后去调用它。</p>
+<p>所以虽然我们说的是一个<code>effect</code>（这里指更新<code>document</code>的<code>title</code>），但其实每次渲染都是一个不同的函数 — 并且每个<code>effect</code>函数“看到”的<code>props</code>和<code>state</code>都来自于它属于的那次特定渲染。</p>
+<h1 id="Hook使用规则"><a href="#Hook使用规则" class="headerlink" title="Hook使用规则"></a>Hook使用规则</h1><p>Hook 就是 JavaScript 函数，但是使用它们会有两个额外的规则：</p>
+<ul>
+<li>只能在<strong>函数最外层</strong>调用 <code>Hook</code>。<strong>不要</strong>在循环、条件判断或者子函数中调用。</li>
+<li>只能在<code>React</code>的函数中调用调用<code>Hook</code>。不要在普通的<code>JavaScript</code>函数中调用<code>Hook</code>，你可以：<ul>
+<li>在<code>React</code>的函数组件中调用<code>Hook</code></li>
+<li>在自定义<code>Hook</code>中调用其他<code>Hook</code></li>
+</ul>
+</li>
+</ul>
+<p>为了更好地执行这个规则，react提供了eslint插件帮助你去检测和强制执行上述规则：<a href="https://www.npmjs.com/package/eslint-plugin-react-hooks" target="_blank" rel="external">eslint-plugin-react-hooks</a>。</p>
+<h2 id="为什么是这样的规则呢？"><a href="#为什么是这样的规则呢？" class="headerlink" title="为什么是这样的规则呢？"></a>为什么是这样的规则呢？</h2><p>这要从<code>React</code>内部执行<code>Hook</code>的机制说起：</p>
+<p><code>React</code>函数组件中，可以使用多个<code>useState</code>或者<code>useEffect</code>，那么<code>React</code>怎么知道哪个<code>state</code>对应哪个<code>useState</code>？答案是<code>React</code>靠的是<code>Hook</code>调用的顺序。只要<code>Hook</code>的调用顺序在多次渲染之间保持一致，<code>React</code>就能正确地将内部<code>state</code>和对应的<code>Hook</code>进行关联。如果我们将一个<code>Hook</code>调用放在了条件语句中，就有可能会扰乱<code>Hook</code>的调用的顺序，导致内部错误的对应state和useState，进而导致bug的产生。</p>
+<h1 id="使用自定义Hook"><a href="#使用自定义Hook" class="headerlink" title="使用自定义Hook"></a>使用自定义Hook</h1><p><strong>自定义<code>Hook</code>是一个函数，其名称以 “use” 开头，函数内部可以调用其他的<code>Hook</code></strong>。<br>当我们想在两个函数之间共享逻辑时，我们会把它提取到第三个函数中。而组件和<code>Hook</code>都是函数，所以也同样适用这种方式。</p>
+<p>可以直接看下面的例子：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> &#123; useState, useEffect &#125; <span class="keyword">from</span> <span class="string">'react'</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">useFriendStatus</span>(<span class="params">friendID</span>) </span>&#123;</div><div class="line">  <span class="keyword">const</span> [isOnline, setIsOnline] = useState(<span class="literal">null</span>);</div><div class="line"></div><div class="line">  useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">handleStatusChange</span>(<span class="params">status</span>) </span>&#123;</div><div class="line">      setIsOnline(status.isOnline);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    ChatAPI.subscribeToFriendStatus(friendID, handleStatusChange);</div><div class="line">    <span class="keyword">return</span> <span class="function"><span class="params">()</span> =&gt;</span> &#123;</div><div class="line">      ChatAPI.unsubscribeFromFriendStatus(friendID, handleStatusChange);</div><div class="line">    &#125;;</div><div class="line">  &#125;);</div><div class="line"></div><div class="line">  <span class="keyword">return</span> isOnline;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>与<code>React</code>组件不同的是，自定义<code>Hook</code>不需要具有特殊的标识。我们可以自由的决定它的参数是什么，以及它应该返回什么。换句话说，它就像一个正常的函数,但是它的名字应该始终以<code>use</code>开头，这样可以一眼看出其符合<code>Hook</code>的规则。</p>
+<p>此处<code>useFriendStatus</code>的<code>Hook</code>目的是订阅某个好友的在线状态。这就是我们需要将<code>friendID</code>作为参数，并返回这位好友的在线状态的原因。</p>
+<h2 id="使用自定义Hook-1"><a href="#使用自定义Hook-1" class="headerlink" title="使用自定义Hook"></a>使用自定义Hook</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">FriendStatus</span>(<span class="params">props</span>) </span>&#123;</div><div class="line">  <span class="keyword">const</span> isOnline = useFriendStatus(props.friend.id);</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (isOnline === <span class="literal">null</span>) &#123;</div><div class="line">    <span class="keyword">return</span> <span class="string">'Loading...'</span>;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">return</span> isOnline ? <span class="string">'Online'</span> : <span class="string">'Offline'</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">FriendListItem</span>(<span class="params">props</span>) </span>&#123;</div><div class="line">  <span class="keyword">const</span> isOnline = useFriendStatus(props.friend.id);</div><div class="line"></div><div class="line">  <span class="keyword">return</span> (</div><div class="line">    <span class="xml"><span class="tag">&lt;<span class="name">li</span> <span class="attr">style</span>=<span class="string">&#123;&#123;</span> <span class="attr">color:</span> <span class="attr">isOnline</span> ? '<span class="attr">green</span>' <span class="attr">:</span> '<span class="attr">black</span>' &#125;&#125;&gt;</span></span></div><div class="line">      &#123;props.friend.name&#125;</div><div class="line">    <span class="tag">&lt;/<span class="name">li</span>&gt;</span></div><div class="line">  );</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>自定义<code>Hook</code>是一种自然遵循<code>Hook</code>设计的约定，而并不是<code>React</code>的特性。</p>
+<p><strong>自定义<code>Hook</code>必须以 “use” 开头吗</strong>？必须如此。这个约定非常重要。不遵循的话，由于无法判断某个函数是否包含对其内部<code>Hook</code>的调用，<code>React</code>将无法自动检查你的<code>Hook</code>是否违反了<code>Hook</code>的规则。</p>
+<p><strong>在两个组件中使用相同的<code>Hook</code>会共享<code>state</code>吗</strong>？不会。自定义<code>Hook</code>是一种重用状态逻辑的机制(例如设置为订阅并存储当前值)，所以每次使用自定义<code>Hook</code>时，其中的所有<code>state</code>和副作用都是完全隔离的。</p>
+<p><strong>自定义<code>Hook</code>如何获取独立的<code>state</code></strong>？每次调用<code>Hook</code>，它都会获取独立的<code>state</code>。由于我们直接调用了<code>useFriendStatus</code>，从<code>React</code>的角度来看，我们的组件只是调用了<code>useState</code>和<code>useEffect</code>。正如我们在之前章节中了解到的一样，我们可以在一个组件中多次调用<code>useState</code>和<code>useEffect</code>，它们是完全独立的。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>零零碎碎写了这么多，作为一个入门参考，看了这篇文章，应该会对React Hook有了大致的了解，文章中也有深入其内部机制剖析的地方，但是仅仅对state和effect部分做了简要的深入，而实际上React Hook中间还有很多的点值得去深入推敲，由于实际项目工作中用到的不多，因此也没法抓住某个坑做深入的研究，准备后续认真研读一下react的源码，对其内部机制做深入的研究。好好静下心来沉淀。</p>
+<p>#参考文档</p>
+<ul>
+<li><a href="https://zh-hans.reactjs.org/docs/hooks-intro.html" target="_blank" rel="external">react 官方中文</a></li>
+<li><a href="https://overreacted.io/zh-hans/a-complete-guide-to-useeffect/" target="_blank" rel="external">useEffect 完整指南</a></li>
+<li><a href="https://segmentfault.com/a/1190000019223106#item-7-8" target="_blank" rel="external">React Hook 不完全指南</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/12/你不得不知的Event-Loop/" rel="next" title="你不得不知的Event Loop">
+                <i class="fa fa-chevron-left"></i> 你不得不知的Event Loop
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2020/03/14/react hooks/"
+           data-title="React Hook 不完全指南" data-url="http://yoursite.com/2020/03/14/react hooks/">
+      </div>
+    
+    <div id="container"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+var gitment = new Gitment({
+  owner: 'mengera88',
+  repo: 'mengera88.github.io',
+  oauth: {
+    client_id: 'd7cbe4a57bd21cf9e226',
+    client_secret: 'c500a92c31b1f17fc147b0e191448accdf310ece',
+  },
+})
+gitment.render('comments')
+</script>
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Jessica" />
+          <p class="site-author-name" itemprop="name">Jessica</p>
+          <p class="site-description motion-element" itemprop="description">前端 node JavaScript 学习 技术杂谈</p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Hook是什么"><span class="nav-number">2.</span> <span class="nav-text">Hook是什么</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#为什么要提出React-Hook"><span class="nav-number">3.</span> <span class="nav-text">为什么要提出React Hook</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#在组件之间复用状态逻辑很难"><span class="nav-number">3.0.1.</span> <span class="nav-text">在组件之间复用状态逻辑很难</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#复杂组件变得难以理解"><span class="nav-number">3.0.2.</span> <span class="nav-text">复杂组件变得难以理解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#难以理解的-class"><span class="nav-number">3.0.3.</span> <span class="nav-text">难以理解的 class</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#内置常用HOOK概览"><span class="nav-number">4.</span> <span class="nav-text">内置常用HOOK概览</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#React中内置的Hook-API"><span class="nav-number">4.1.</span> <span class="nav-text">React中内置的Hook API</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#State-Hook"><span class="nav-number">4.2.</span> <span class="nav-text">State Hook</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#调用-useState-方法的时候做了什么"><span class="nav-number">4.2.1.</span> <span class="nav-text">调用 useState 方法的时候做了什么?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#useState-需要哪些参数？"><span class="nav-number">4.2.2.</span> <span class="nav-text">useState 需要哪些参数？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#useState-方法的返回值是什么？"><span class="nav-number">4.2.3.</span> <span class="nav-text">useState 方法的返回值是什么？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#继续深入"><span class="nav-number">4.2.4.</span> <span class="nav-text">继续深入</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#每一次渲染都有它自己的props和state"><span class="nav-number">4.2.4.1.</span> <span class="nav-text">每一次渲染都有它自己的props和state</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Effect-Hook"><span class="nav-number">4.3.</span> <span class="nav-text">Effect Hook</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#深入"><span class="nav-number">4.3.1.</span> <span class="nav-text">深入</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#每次渲染都有它自己的Effects"><span class="nav-number">4.3.1.1.</span> <span class="nav-text">每次渲染都有它自己的Effects</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Hook使用规则"><span class="nav-number">5.</span> <span class="nav-text">Hook使用规则</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么是这样的规则呢？"><span class="nav-number">5.1.</span> <span class="nav-text">为什么是这样的规则呢？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用自定义Hook"><span class="nav-number">6.</span> <span class="nav-text">使用自定义Hook</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用自定义Hook-1"><span class="nav-number">6.1.</span> <span class="nav-text">使用自定义Hook</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jessica</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+</br>
+<span id="busuanzi_container_site_pv">
+  Total <span id="busuanzi_value_site_pv"></span> views.
+  您是jessica的第<span id="busuanzi_value_site_uv"></span>个小伙伴
+  <span id="busuanzi_value_page_pv"></span> Hits
+</span>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"mengera88"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
